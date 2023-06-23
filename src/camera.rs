@@ -25,6 +25,7 @@ pub mod my {
 
     impl Camera {
         pub fn pre_calc(&mut self) {
+            println!("1");
              // calc coordframe
             let a = self.look_from - self.look_at;
             let b = self.up;
@@ -35,26 +36,34 @@ pub mod my {
 
             self.half_fov_y = self.half_fov_y / 2.0;
 
-            let fovy_rads = self.fov_y * 3.14159265358979323846 / 180.0;
-
+            //let fovy_rads = self.fov_y * std::f32::consts::PI / 180.0;
+            
+            println!("2");
             // Calc vertical fov
             let aspect_ratio = self.width / self.heigh;
-            self.fov_x = 2.0 * arccos(tan(fovy_rads / 2.0) * aspect_ratio);
+            println!("2.0");
+            let tan_of_fovy = tan(self.fov_y);
 
-            self.tan_half_fov_x = tan(self.fov_x / 2.0);
-            self.tan_half_fov_y = tan(fovy_rads / 2.0);
+            println!("Tan of fovy");
+            self.fov_x = 2.0 * arctan(tan_of_fovy * aspect_ratio);
 
+            println!("2.1");
+            self.tan_half_fov_x = tan(self.fov_y / 2.0);
+            println!("2.2");
+            self.tan_half_fov_y = tan(self.fov_x);
+
+            println!("3");
             self.half_height = self.heigh / 2.0;
             self.half_width = self.width / 2.0;
 
         }
 
-        pub fn from(look_from: Vector3<f32>, look_at: Vector3<f32>, up: Vector3<f32>, fovy: f32) -> Self {
+        pub fn from(look_from: Vector3<f32>, look_at: Vector3<f32>, up: Vector3<f32>, fov_y: f32) -> Self {
             let camera = Camera{
-                width: 0.0,
-                heigh: 0.0,
-                fov_y: fovy,
-                fov_x: 0.0,
+                width: 400.0,
+                heigh: 300.0,
+                fov_y,
+                fov_x: 45.0,
                 half_fov_y: 0.0,
                 tan_half_fov_x: 0.0,
                 tan_half_fov_y: 0.0,
