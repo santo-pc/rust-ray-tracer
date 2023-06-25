@@ -1,6 +1,7 @@
 
 pub mod camera;
-use crate::camera::my::Camera;
+pub mod shapes;
+use crate::{camera::camera::Camera, shapes::shapes::Sphere};
 use cgmath::Vector3; 
 
 fn main() {
@@ -11,8 +12,12 @@ fn main() {
         10.0
     );
 
-    println!("{:?}", c);
+    println!("{:#?}", c);
     c.pre_calc();
-    println!("{:?}", c);
+    println!("{:#?}", c);
+    
+
+    println!("{:#?}", Vector3::new(10.0, 10.0, 10.0) * 2.0);
+    println!("{:#?}", Sphere::default());
 
 }
