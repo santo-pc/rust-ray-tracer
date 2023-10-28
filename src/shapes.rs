@@ -1,10 +1,10 @@
 pub mod shapes {
     use crate::camera::camera::Ray;
     use crate::ray_tracer::ray_tracer::HitInfo;
-    use ::cgmath::Matrix4;
-    use ::cgmath::Vector3;
-    use ::cgmath::Vector4;
     use cgmath::num_traits::pow;
+    use cgmath::Matrix4;
+    use cgmath::Vector3;
+    use cgmath::Vector4;
     use cgmath::{
         EuclideanSpace, InnerSpace, Matrix, Matrix3, Point3, SquareMatrix, Transform, Zero,
     };
@@ -25,7 +25,7 @@ pub mod shapes {
 
     pub trait AsGShape {
         fn as_g_shape(&self) -> &GeometricShape;
-        fn pre_calc(&self);
+        fn pre_calc(&mut self);
         fn intersection(&self, ray: &Ray) -> HitInfo;
     }
 
@@ -83,11 +83,11 @@ pub mod shapes {
             self.g_shape.inverse_transpose_transform = self.g_shape.inverse_transform.transpose();
             // inverseTransposeTransform3x3 = mat3(inverseTransposeTransform);
             // self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from(self.g_shape.inverse_transpose_transform.);
-            self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from {
-                x: self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
-                y: self.g_shape.inverse_transpose_transform.row(1).truncate_n(3),
-                z: self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
-            };
+            self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from_cols(
+                self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
+                self.g_shape.inverse_transpose_transform.row(1).truncate_n(3),
+                self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
+            );
         }
 
         fn intersection(&self, ray: &Ray) -> HitInfo {
@@ -152,7 +152,7 @@ pub mod shapes {
                     (self.g_shape.inverse_transpose_transform_3x3 * normal.truncate()).normalize();
 
                 // Calc depth value
-                let t = intersection_obj_space - old_p0;
+                let t = (intersection_obj_space.truncate() - old_p0).magnitude();
 
                 // Set output
                 return HitInfo::from(

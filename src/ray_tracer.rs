@@ -3,7 +3,6 @@ pub mod ray_tracer {
     use crate::shapes::shapes::AsGShape;
     use crate::Scene;
     use cgmath::{Vector3, Zero};
-    use std::arch::aarch64::int32x4x4_t;
 
     #[derive(Debug)]
     pub struct HitInfo {
@@ -34,9 +33,13 @@ pub mod ray_tracer {
                 ray: Ray::new(Vector3::zero(), Vector3::zero(), 0.0),
             }
         }
+
+        pub fn new() -> HitInfo {
+            todo!()
+        }
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct Color {
         r: i32,
         g: i32,
@@ -60,7 +63,8 @@ pub mod ray_tracer {
         }
 
         pub fn convert_to_one_row_array(&self) -> Vec<i32> {
-            self.image.iter().flat_map(|row| row.iter()).cloned().collect()
+            // self.image.iter().flat_map(|row| row.iter()).cloned().collect()
+            todo!("implement me")
         }
     }
 
@@ -74,28 +78,23 @@ pub mod ray_tracer {
 
             for j in 0..=height {
                 for i in 0..=width {
-                    let mut x_mid = i + 0.5;
-                    let mut y_mid = j + 0.5;
+                    let mut x_mid = i as f32 + 0.5;
+                    let mut y_mid = j as f32 + 0.5;
 
                     let ray = cam.ray_thru_pixel(x_mid, y_mid);
-                    let hit = self.intersect(ray, scene);
+                    let hit = self.intersect(&ray, scene);
                 }
             }
 
             return image;
         }
 
-        fn test() -> () {}
-
-        fn test2() -> () {
-            return test();
-        }
-        fn intersect(ray: &Ray, scene: &Scene) -> HitInfo {
+        fn intersect(&self, ray: &Ray, scene: &Scene) -> HitInfo {
             let mut t_min = f32::MAX;
             let mut closest_intersection = HitInfo::new();
             closest_intersection.t_value = f32::MAX;
 
-            for it in scene.spheres {
+            for it in &scene.spheres {
                 let test = HitInfo::new();
                 let intersection = it.intersection(ray);
                 if intersection.has_intersected {
