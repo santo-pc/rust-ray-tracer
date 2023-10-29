@@ -73,13 +73,13 @@ pub mod ray_tracer {
 
     impl RayTracer {
         pub fn ray_trace(&self, scene: &Scene, width: i32, height: i32) -> Image {
-            let mut image = Image::new(width, height);
+            let image = Image::new(width, height);
             let cam = scene.cams.get(0).unwrap();
 
             for j in 0..=height {
                 for i in 0..=width {
-                    let mut x_mid = i as f32 + 0.5;
-                    let mut y_mid = j as f32 + 0.5;
+                    let x_mid = i as f32 + 0.5;
+                    let y_mid = j as f32 + 0.5;
 
                     let ray = cam.ray_thru_pixel(x_mid, y_mid);
                     let hit = self.intersect(&ray, scene);

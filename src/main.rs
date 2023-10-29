@@ -4,6 +4,7 @@ pub mod shapes;
 
 use crate::{camera::camera::Camera, shapes::shapes::Sphere};
 use cgmath::Vector3;
+use ray_tracer::ray_tracer::RayTracer;
 use std::default;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -39,9 +40,28 @@ impl RenderSettings {
     }
 }
 
+fn create_sample_cam() -> Camera {
+    Camera::from(
+        Vector3 { x: 0.0, y: 0.0, z: 0.0 },
+        Vector3 { x: 0.0, y: 0.0, z: 1.0 },
+        Vector3 { x: 0.0, y: 1.0, z: 0.0 },
+        90.0,
+    )
+}
+
 fn main() -> io::Result<()> {
     // let scene =
     // read_scene("/Users/s.palacio-caro/Dev/rust/my-ray-tracer/src/scene1.test".to_string());
+    let scene = Scene {
+        cams: vec![create_sample_cam()],
+        spheres: vec![create_sample_sphere()],
+        triangles: vec![],
+        vertices: vec![],
+    };
+
+    let tracer = RayTracer {};
+
+    tracer.ray_trace(scene, width, height);
 
     Ok(())
 }
