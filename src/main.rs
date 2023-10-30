@@ -2,9 +2,10 @@ pub mod camera;
 mod ray_tracer;
 pub mod shapes;
 
+use crate::ray_tracer::ray_tracer::Color;
 use crate::{camera::camera::Camera, shapes::shapes::Sphere};
 use cgmath::Vector3;
-use ray_tracer::ray_tracer::RayTracer;
+use ray_tracer::ray_tracer::{Image, RayTracer};
 use std::default;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -56,6 +57,23 @@ fn create_sample_cam() -> Camera {
 fn main() -> io::Result<()> {
     // let scene =
     // read_scene("/Users/s.palacio-caro/Dev/rust/my-ray-tracer/src/scene1.test".to_string());
+    println!("Testing Image");
+    let mut image = Image::new(2, 2);
+
+    image.image[0 as usize][0 as usize] = Color { r: 1, g: 0, b: 0 };
+    image.image[0 as usize][1 as usize] = Color { r: 2, g: 0, b: 0 };
+    image.image[1 as usize][0 as usize] = Color { r: 3, g: 0, b: 0 };
+    image.image[1 as usize][1 as usize] = Color { r: 4, g: 0, b: 0 };
+
+    image.print_matrix();
+
+    // image.image.iter().for_each(|col| {
+    //     col.iter().for_each(|cell| print!("{}", cell));
+    //     println!("");
+    // });
+    //
+    // return Ok(());
+
     println!("Starting to build scene");
     let scene = Scene {
         cams: vec![create_sample_cam()],
@@ -66,7 +84,7 @@ fn main() -> io::Result<()> {
 
     let tracer = RayTracer {};
 
-    tracer.ray_trace(&scene, 400, 400);
+    tracer.ray_trace(&scene, 4, 2);
 
     Ok(())
 }

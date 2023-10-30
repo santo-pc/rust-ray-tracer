@@ -1,5 +1,7 @@
 pub mod ray_tracer {
 
+    use std::fmt::{self, Display};
+
     use crate::camera::camera::Ray;
     use crate::shapes::shapes::AsGShape;
     use crate::Scene;
@@ -36,16 +38,22 @@ pub mod ray_tracer {
 
     #[derive(Debug, Clone)]
     pub struct Color {
-        r: i32,
-        g: i32,
-        b: i32,
+        pub r: i32,
+        pub g: i32,
+        pub b: i32,
+    }
+
+    impl fmt::Display for Color {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            write!(f, "[r{}g{}b{}]", self.r, self.g, self.b)
+        }
     }
 
     #[derive(Debug)]
     pub struct Image {
         width: i32,
         height: i32,
-        image: Vec<Vec<Color>>,
+        pub image: Vec<Vec<Color>>,
     }
 
     impl Image {
@@ -53,8 +61,16 @@ pub mod ray_tracer {
             Image {
                 width,
                 height,
-                image: vec![vec![Color { r: 0, g: 0, b: 0 }; height as usize]; width as usize],
+                // matrix hxw
+                image: vec![vec![Color { r: 0, g: 0, b: 0 }; width as usize]; height as usize],
             }
+        }
+
+        pub fn print_matrix(&self) -> () {
+            self.image.iter().for_each(|col| {
+                col.iter().for_each(|cell| print!("{}", cell));
+                println!("");
+            });
         }
 
         pub fn convert_to_one_row_array(&self) -> Vec<i32> {
@@ -68,12 +84,12 @@ pub mod ray_tracer {
 
     impl RayTracer {
         pub fn ray_trace(&self, scene: &Scene, width: i32, height: i32) -> Image {
-            let image = Image::new(width, height);
+            let mut image = Image::new(width, height);
             let cam = scene.cams.get(0).unwrap();
-            println!("Starting ray tracing with scene: {:?}", scene);
+            // println!("Starting ray tracing with scene: {:?}", scene);
 
-            for j in 0..=height {
-                for i in 0..=width {
+            for j in 0..height {
+                for i in 0..width {
                     let x_mid = i as f32 + 0.5;
                     let y_mid = j as f32 + 0.5;
 
@@ -83,10 +99,19 @@ pub mod ray_tracer {
                         TestHit::Hit(_) => Color { r: 1, g: 0, b: 0 },
                         TestHit::NoHit => Color { r: 0, g: 0, b: 0 },
                     };
-                    // todo set color into image[i][j]
+
+                    // println!("Ray tested as {:?} and color {:?}", hit, _color);
+
+                    image.image[j as usize][i as usize] = _color;
+                    // println!(
+                    //     "Assinged a the color {:?} for j: {} and i: {}",
+                    //     image.image[j as usize][i as usize], i, j
+                    // );
                 }
             }
+            println!("result image:");
 
+            image.print_matrix();
             return image;
         }
 
@@ -107,7 +132,12 @@ pub mod ray_tracer {
                     _ => (),
                 }
             }
-            return TestHit::Hit(closest_intersection);
+
+            if closest_intersection.t_value == f32::MAX {
+                return TestHit::NoHit;
+            } else {
+                return TestHit::Hit(closest_intersection);
+            }
         }
     }
 }
