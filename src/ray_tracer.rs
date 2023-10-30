@@ -1,12 +1,18 @@
 pub mod ray_tracer {
-    use crate::camera::camera::{Camera, Ray};
+
+    use crate::camera::camera::Ray;
     use crate::shapes::shapes::AsGShape;
     use crate::Scene;
     use cgmath::{Vector3, Zero};
 
     #[derive(Debug)]
+    pub enum TestHit {
+        Hit(HitInfo),
+        NoHit,
+    }
+
+    #[derive(Debug)]
     pub struct HitInfo {
-        has_intersected: bool,
         t_value: f32,
         p: Vector3<f32>,
         n: Vector3<f32>,
@@ -14,28 +20,17 @@ pub mod ray_tracer {
     }
 
     impl HitInfo {
-        pub fn from(
-            has_intersected: bool,
-            t_value: f32,
-            p: Vector3<f32>,
-            n: Vector3<f32>,
-            ray: Ray,
-        ) -> HitInfo {
-            HitInfo { has_intersected, t_value, p, n, ray }
+        pub fn from(t_value: f32, p: Vector3<f32>, n: Vector3<f32>, ray: Ray) -> HitInfo {
+            HitInfo { t_value, p, n, ray }
         }
 
-        pub fn no_hit() -> HitInfo {
+        pub fn new() -> HitInfo {
             HitInfo {
-                has_intersected: false,
                 t_value: 0.0,
                 p: Vector3::zero(),
                 n: Vector3::zero(),
                 ray: Ray::new(Vector3::zero(), Vector3::zero(), 0.0),
             }
-        }
-
-        pub fn new() -> HitInfo {
-            todo!()
         }
     }
 
@@ -75,6 +70,7 @@ pub mod ray_tracer {
         pub fn ray_trace(&self, scene: &Scene, width: i32, height: i32) -> Image {
             let image = Image::new(width, height);
             let cam = scene.cams.get(0).unwrap();
+            println!("Starting ray tracing with scene: {:?}", scene);
 
             for j in 0..=height {
                 for i in 0..=width {
@@ -83,29 +79,35 @@ pub mod ray_tracer {
 
                     let ray = cam.ray_thru_pixel(x_mid, y_mid);
                     let hit = self.intersect(&ray, scene);
+                    let _color = match hit {
+                        TestHit::Hit(_) => Color { r: 1, g: 0, b: 0 },
+                        TestHit::NoHit => Color { r: 0, g: 0, b: 0 },
+                    };
+                    // todo set color into image[i][j]
                 }
             }
 
             return image;
         }
 
-        fn intersect(&self, ray: &Ray, scene: &Scene) -> HitInfo {
+        fn intersect(&self, ray: &Ray, scene: &Scene) -> TestHit {
             let mut t_min = f32::MAX;
             let mut closest_intersection = HitInfo::new();
             closest_intersection.t_value = f32::MAX;
 
             for it in &scene.spheres {
-                let test = HitInfo::new();
-                let intersection = it.intersection(ray);
-                if intersection.has_intersected {
-                    if test.t_value < t_min && test.t_value > 0.0 {
-                        t_min = test.t_value;
-                        closest_intersection = test;
-                        closest_intersection.ray = ray.clone();
-                    }
+                match it.intersection(ray) {
+                    TestHit::Hit(test) => {
+                        if test.t_value < t_min && test.t_value > 0.0 {
+                            t_min = test.t_value;
+                            closest_intersection = test;
+                            closest_intersection.ray = ray.clone();
+                        }
+                    },
+                    _ => (),
                 }
             }
-            return HitInfo::new();
+            return TestHit::Hit(closest_intersection);
         }
     }
 }

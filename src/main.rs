@@ -10,7 +10,7 @@ use std::fs::File;
 use std::io::{self, BufRead};
 
 #[derive(Debug)]
-struct Scene {
+pub struct Scene {
     cams: Vec<Camera>,
     spheres: Vec<Sphere>,
     triangles: Vec<Sphere>,
@@ -40,18 +40,23 @@ impl RenderSettings {
     }
 }
 
+fn create_sample_sphere() -> Sphere {
+    Sphere::from(-0.5, 1.0, -0.5, 0.15)
+}
+
 fn create_sample_cam() -> Camera {
     Camera::from(
+        Vector3 { x: -2.0, y: -2.0, z: 2.0 },
         Vector3 { x: 0.0, y: 0.0, z: 0.0 },
-        Vector3 { x: 0.0, y: 0.0, z: 1.0 },
-        Vector3 { x: 0.0, y: 1.0, z: 0.0 },
-        90.0,
+        Vector3 { x: 1.0, y: 1.0, z: 2.0 },
+        60.0,
     )
 }
 
 fn main() -> io::Result<()> {
     // let scene =
     // read_scene("/Users/s.palacio-caro/Dev/rust/my-ray-tracer/src/scene1.test".to_string());
+    println!("Starting to build scene");
     let scene = Scene {
         cams: vec![create_sample_cam()],
         spheres: vec![create_sample_sphere()],
@@ -61,7 +66,7 @@ fn main() -> io::Result<()> {
 
     let tracer = RayTracer {};
 
-    tracer.ray_trace(scene, width, height);
+    tracer.ray_trace(&scene, 400, 400);
 
     Ok(())
 }

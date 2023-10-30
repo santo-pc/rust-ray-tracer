@@ -1,6 +1,7 @@
 pub mod shapes {
     use crate::camera::camera::Ray;
     use crate::ray_tracer::ray_tracer::HitInfo;
+    use crate::ray_tracer::ray_tracer::TestHit;
     use cgmath::num_traits::pow;
     use cgmath::Matrix4;
     use cgmath::Vector3;
@@ -26,12 +27,23 @@ pub mod shapes {
     pub trait AsGShape {
         fn as_g_shape(&self) -> &GeometricShape;
         fn pre_calc(&mut self);
-        fn intersection(&self, ray: &Ray) -> HitInfo;
+        fn intersection(&self, ray: &Ray) -> TestHit;
     }
 
     impl GeometricShape {
         pub fn intersection() -> bool {
             return true;
+        }
+
+        pub fn default() -> GeometricShape {
+            GeometricShape {
+                size: 0.0,
+                material: Vector3 { x: 0, y: 0, z: 0 },
+                transform: Matrix4::zero(),
+                inverse_transform: Matrix4::zero(),
+                inverse_transpose_transform: Matrix4::zero(),
+                inverse_transpose_transform_3x3: Matrix3::zero(),
+            }
         }
     }
 
@@ -45,29 +57,12 @@ pub mod shapes {
     }
 
     impl Sphere {
-        pub fn from(x: f32, y: f32, z: f32) -> Sphere {
-            let mut sphere = Sphere::default();
-            sphere.x = x;
-            sphere.y = y;
-            sphere.z = z;
-            return sphere;
+        pub fn from(x: f32, y: f32, z: f32, radius: f32) -> Sphere {
+            Sphere { x, y, z, radius, g_shape: GeometricShape::default() }
         }
 
         pub fn default() -> Sphere {
-            Sphere {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-                radius: 0.0,
-                g_shape: GeometricShape {
-                    size: 0.0,
-                    material: Vector3 { x: 0, y: 0, z: 0 },
-                    transform: Matrix4::zero(),
-                    inverse_transform: Matrix4::zero(),
-                    inverse_transpose_transform: Matrix4::zero(),
-                    inverse_transpose_transform_3x3: Matrix3::zero(),
-                },
-            }
+            Sphere { x: 0.0, y: 0.0, z: 0.0, radius: 0.0, g_shape: GeometricShape::default() }
         }
     }
 
@@ -90,7 +85,7 @@ pub mod shapes {
             );
         }
 
-        fn intersection(&self, ray: &Ray) -> HitInfo {
+        fn intersection(&self, ray: &Ray) -> TestHit {
             let old_p0 = ray.o;
             let old_p1 = ray.d;
 
@@ -112,10 +107,9 @@ pub mod shapes {
 
             let discriminant = (b * b) - (4.0 * a * c);
 
-            if discriminant < 0.0
             // No intersection
-            {
-                return HitInfo::no_hit();
+            if discriminant < 0.0 {
+                return TestHit::NoHit;
             } else if discriminant >= 0.0 {
                 let sqrt_discriminant = sqrt(discriminant);
 
@@ -134,7 +128,7 @@ pub mod shapes {
                     t_value = t1;
 
                     if t1 <= 0.0 {
-                        return HitInfo::no_hit();
+                        return TestHit::NoHit;
                     };
                 }
 
@@ -155,16 +149,15 @@ pub mod shapes {
                 let t = (intersection_obj_space.truncate() - old_p0).magnitude();
 
                 // Set output
-                return HitInfo::from(
-                    true,
+                return TestHit::Hit(HitInfo::from(
                     t,
                     intersection_obj_space.truncate(),
                     normal_transformed,
                     ray.clone(),
-                );
+                ));
             }
 
-            return HitInfo::no_hit();
+            return TestHit::NoHit;
         }
     }
 }
