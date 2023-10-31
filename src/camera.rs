@@ -6,8 +6,8 @@ pub mod camera {
 
     #[derive(Debug)]
     pub struct Camera {
-        pub width: f32,
-        pub height: f32,
+        pub width: u32,
+        pub height: u32,
         pub fov_y: f32,
         pub fov_x: f32,
         pub half_fov_y: f32,
@@ -50,7 +50,7 @@ pub mod camera {
 
             // Calc vertical fov
             let fovy_rads = self.fov_y * M_PI / 180.0;
-            let aspect_ratio = self.width / self.height;
+            let aspect_ratio = (self.width / self.height) as f32;
 
             self.fov_x = 2.0 * arctan(tan(fovy_rads / 2.0) * aspect_ratio);
 
@@ -58,19 +58,21 @@ pub mod camera {
             self.tan_half_fov_x = tan(self.fov_x / 2.0);
             self.tan_half_fov_y = tan(fovy_rads / 2.0);
 
-            self.half_height = self.height / 2.0;
-            self.half_width = self.width / 2.0;
+            self.half_height = self.height as f32 / 2.0;
+            self.half_width = self.width as f32 / 2.0;
         }
 
         pub fn from(
+            width: u32,
+            height: u32,
             look_from: Vector3<f32>,
             look_at: Vector3<f32>,
             up: Vector3<f32>,
             fov_y: f32,
         ) -> Self {
             Camera {
-                width: 400.0,
-                height: 300.0,
+                width,
+                height,
                 fov_y,
                 fov_x: 45.0,
                 half_fov_y: 0.0,

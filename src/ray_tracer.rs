@@ -51,13 +51,13 @@ pub mod ray_tracer {
 
     #[derive(Debug)]
     pub struct Image {
-        width: i32,
-        height: i32,
+        width: u32,
+        height: u32,
         pub image: Vec<Vec<Color>>,
     }
 
     impl Image {
-        pub fn new(width: i32, height: i32) -> Image {
+        pub fn new(width: u32, height: u32) -> Image {
             Image {
                 width,
                 height,
@@ -73,9 +73,35 @@ pub mod ray_tracer {
             });
         }
 
-        pub fn convert_to_one_row_array(&self) -> Vec<i32> {
-            // self.image.iter().flat_map(|row| row.iter()).cloned().collect()
-            todo!("implement me")
+        pub fn convert_to_one_row_array(&self) -> Vec<u8> {
+            // More functional approach
+            return self
+                .image
+                .iter()
+                .flatten()
+                .into_iter()
+                .map(|c| vec![c.r as u8, c.g as u8, c.b as u8])
+                .flatten()
+                .collect::<Vec<u8>>();
+
+            // Two loops approach
+            // let mut result = vec![0; 400 * 400 * 3];
+            // let mut index: usize = 0usize;
+            // for j in 0..400 {
+            //     for i in 0..400 {
+            //         // result.push(self.image[j][i].r as u8);
+            //         // result.push(self.image[j][i].g as u8);
+            //         // result.push(self.image[j][i].b as u8);
+            //         result[index] = self.image[j][i].r as u8;
+            //         index += 1;
+            //         result[index] = self.image[j][i].g as u8;
+            //         index += 1;
+            //         result[index] = self.image[j][i].b as u8;
+            //         index += 1;
+            //     }
+            // }
+            //
+            // return result;
         }
     }
 
@@ -83,20 +109,20 @@ pub mod ray_tracer {
     pub struct RayTracer {}
 
     impl RayTracer {
-        pub fn ray_trace(&self, scene: &Scene, width: i32, height: i32) -> Image {
-            let mut image = Image::new(width, height);
+        pub fn ray_trace(&self, scene: &Scene) -> Image {
             let cam = scene.cams.get(0).unwrap();
+            let mut image = Image::new(cam.width, cam.height);
             // println!("Starting ray tracing with scene: {:?}", scene);
 
-            for j in 0..height {
-                for i in 0..width {
+            for j in 0..cam.height {
+                for i in 0..cam.width {
                     let x_mid = i as f32 + 0.5;
                     let y_mid = j as f32 + 0.5;
 
                     let ray = cam.ray_thru_pixel(x_mid, y_mid);
                     let hit = self.intersect(&ray, scene);
                     let _color = match hit {
-                        TestHit::Hit(_) => Color { r: 1, g: 0, b: 0 },
+                        TestHit::Hit(_) => Color { r: 255, g: 0, b: 0 },
                         TestHit::NoHit => Color { r: 0, g: 0, b: 0 },
                     };
 
@@ -138,6 +164,31 @@ pub mod ray_tracer {
             } else {
                 return TestHit::Hit(closest_intersection);
             }
+        }
+
+        pub fn test_scene(&self, width: u32, height: u32) -> Image {
+            let mut image = Image::new(width, height);
+
+            for j in 0..height {
+                for i in 0..width {
+                    if j >= (height / 2) - 20
+                        && i >= (width / 2) - 20
+                        && j <= (height / 2) + 20
+                        && i <= (width / 2) + 20
+                    {
+                        image.image[j as usize][i as usize] = Color { r: 255, g: 0, b: 0 };
+                    } else {
+                        image.image[j as usize][i as usize] = Color { r: 0, g: 0, b: 0 };
+                    }
+                }
+            }
+            println!(
+                "Size of image: {}x{}x3={}",
+                image.image.len(),
+                image.image[0].len(),
+                image.image.len() * image.image[0].len() * 3
+            );
+            return image;
         }
     }
 }

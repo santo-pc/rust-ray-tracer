@@ -47,6 +47,8 @@ fn create_sample_sphere() -> Sphere {
 
 fn create_sample_cam() -> Camera {
     Camera::from(
+        800,
+        600,
         Vector3 { x: -2.0, y: -2.0, z: 2.0 },
         Vector3 { x: 0.0, y: 0.0, z: 0.0 },
         Vector3 { x: 1.0, y: 1.0, z: 2.0 },
@@ -55,24 +57,35 @@ fn create_sample_cam() -> Camera {
 }
 
 fn main() -> io::Result<()> {
+    let mut uno = 2;
+    uno = 4;
     // let scene =
     // read_scene("/Users/s.palacio-caro/Dev/rust/my-ray-tracer/src/scene1.test".to_string());
-    println!("Testing Image");
-    let mut image = Image::new(2, 2);
-
-    image.image[0 as usize][0 as usize] = Color { r: 1, g: 0, b: 0 };
-    image.image[0 as usize][1 as usize] = Color { r: 2, g: 0, b: 0 };
-    image.image[1 as usize][0 as usize] = Color { r: 3, g: 0, b: 0 };
-    image.image[1 as usize][1 as usize] = Color { r: 4, g: 0, b: 0 };
-
-    image.print_matrix();
-
+    // println!("Testing Image");
+    // let mut image = Image::new(2, 2);
+    //
+    // image.image[0 as usize][0 as usize] = Color { r: 1, g: 0, b: 0 };
+    // image.image[0 as usize][1 as usize] = Color { r: 2, g: 0, b: 0 };
+    // image.image[1 as usize][0 as usize] = Color { r: 3, g: 0, b: 0 };
+    // image.image[1 as usize][1 as usize] = Color { r: 4, g: 0, b: 0 };
+    //
+    // image.print_matrix();
+    //
     // image.image.iter().for_each(|col| {
     //     col.iter().for_each(|cell| print!("{}", cell));
     //     println!("");
     // });
     //
     // return Ok(());
+
+    // let bytes = vec![2u8; 800 * 600 * 3];
+    // let bytes_mapped: Vec<u8> =
+    //     bytes.iter().enumerate().map(|(i, &_value)| (i % 255) as u8).collect();
+    //
+    // let buffer: &[u8] = &bytes_mapped;
+
+    // Save the buffer as "image.png"
+    // image::save_buffer("image.png", buffer, 800, 600, image::ColorType::Rgb8).unwrap();
 
     println!("Starting to build scene");
     let scene = Scene {
@@ -84,8 +97,18 @@ fn main() -> io::Result<()> {
 
     let tracer = RayTracer {};
 
-    tracer.ray_trace(&scene, 4, 2);
+    // tracer.ray_trace(&scene, 4, 2);
+    // let result = &tracer.test_scene(400, 400).convert_to_one_row_array();
+    let result = &tracer.ray_trace(&scene).convert_to_one_row_array();
 
+    image::save_buffer(
+        "image.png",
+        result,
+        scene.cams[0].width,
+        scene.cams[0].height,
+        image::ColorType::Rgb8,
+    )
+    .unwrap();
     Ok(())
 }
 
