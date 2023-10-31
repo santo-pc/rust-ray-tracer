@@ -1,3 +1,9 @@
+TODO:
+- Review sphere math (precalc and intersection) and add tests
+- Add scene parser for test input files
+- Add shading
+
+
 pub mod camera;
 mod ray_tracer;
 pub mod shapes;
