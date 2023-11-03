@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod test;
+
 pub mod shapes {
     use crate::camera::camera::Ray;
     use crate::ray_tracer::ray_tracer::HitInfo;
@@ -7,7 +10,7 @@ pub mod shapes {
     use cgmath::Vector3;
     use cgmath::Vector4;
     use cgmath::{
-        EuclideanSpace, InnerSpace, Matrix, Matrix3, Point3, SquareMatrix, Transform, Zero,
+        EuclideanSpace, InnerSpace, Matrix, Matrix3, One, Point3, SquareMatrix, Transform, Zero,
     };
     use rust_math::num::sqrt;
 
@@ -26,23 +29,52 @@ pub mod shapes {
 
     pub trait AsGShape {
         fn as_g_shape(&self) -> &GeometricShape;
-        fn pre_calc(&mut self);
+        // fn pre_calc(&mut self);
         fn intersection(&self, ray: &Ray) -> TestHit;
     }
 
+    impl std::default::Default for GeometricShape {
+        fn default() -> Self {
+            Self {
+                size: 0.0,
+                material: Vector3::zero(),
+                transform: Matrix4::one(),
+                inverse_transform: Matrix4::one(),
+                inverse_transpose_transform: Matrix4::one(),
+                inverse_transpose_transform_3x3: Matrix3::one(),
+            }
+        }
+    }
     impl GeometricShape {
         pub fn intersection() -> bool {
             return true;
         }
 
-        pub fn default() -> GeometricShape {
+        pub fn from(transform: Matrix4<f32>) -> GeometricShape {
+            // inverseTransform = glm::inverse(transform);
+            let inverse_transform = transform.invert().unwrap();
+            // inverseTransposeTransform = glm::transpose(inverseTransform);
+            let inverse_transpose_transform = inverse_transform.transpose();
+            // inverseTransposeTransform3x3 = mat3(inverseTransposeTransform);
+            // self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from(self.g_shape.inverse_transpose_transform.);
+            let inverse_transpose_transform_3x3 = Matrix3::new(
+                inverse_transpose_transform.x.x,
+                inverse_transpose_transform.x.y,
+                inverse_transpose_transform.x.z,
+                inverse_transpose_transform.y.x,
+                inverse_transpose_transform.y.y,
+                inverse_transpose_transform.y.z,
+                inverse_transpose_transform.z.x,
+                inverse_transpose_transform.z.y,
+                inverse_transpose_transform.z.z,
+            );
+
             GeometricShape {
-                size: 0.0,
-                material: Vector3 { x: 0, y: 0, z: 0 },
-                transform: Matrix4::zero(),
-                inverse_transform: Matrix4::zero(),
-                inverse_transpose_transform: Matrix4::zero(),
-                inverse_transpose_transform_3x3: Matrix3::zero(),
+                transform,
+                inverse_transform,
+                inverse_transpose_transform,
+                inverse_transpose_transform_3x3,
+                ..Default::default()
             }
         }
     }
@@ -57,8 +89,8 @@ pub mod shapes {
     }
 
     impl Sphere {
-        pub fn from(x: f32, y: f32, z: f32, radius: f32) -> Sphere {
-            Sphere { x, y, z, radius, g_shape: GeometricShape::default() }
+        pub fn from(x: f32, y: f32, z: f32, radius: f32, transform: Matrix4<f32>) -> Sphere {
+            Sphere { x, y, z, radius, g_shape: GeometricShape::from(transform) }
         }
 
         pub fn default() -> Sphere {
@@ -71,20 +103,20 @@ pub mod shapes {
             &self.g_shape
         }
 
-        fn pre_calc(&mut self) {
-            // inverseTransform = glm::inverse(transform);
-            self.g_shape.inverse_transform = self.g_shape.transform.invert().unwrap();
-            // inverseTransposeTransform = glm::transpose(inverseTransform);
-            self.g_shape.inverse_transpose_transform = self.g_shape.inverse_transform.transpose();
-            // inverseTransposeTransform3x3 = mat3(inverseTransposeTransform);
-            // self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from(self.g_shape.inverse_transpose_transform.);
-            self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from_cols(
-                self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
-                self.g_shape.inverse_transpose_transform.row(1).truncate_n(3),
-                self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
-            );
-        }
-
+        // fn pre_calc(&mut self) {
+        //     // inverseTransform = glm::inverse(transform);
+        //     self.g_shape.inverse_transform = self.g_shape.transform.invert().unwrap();
+        //     // inverseTransposeTransform = glm::transpose(inverseTransform);
+        //     self.g_shape.inverse_transpose_transform = self.g_shape.inverse_transform.transpose();
+        //     // inverseTransposeTransform3x3 = mat3(inverseTransposeTransform);
+        //     // self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from(self.g_shape.inverse_transpose_transform.);
+        //     self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from_cols(
+        //         self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
+        //         self.g_shape.inverse_transpose_transform.row(1).truncate_n(3),
+        //         self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
+        //     );
+        // }
+        //
         fn intersection(&self, ray: &Ray) -> TestHit {
             let old_p0 = ray.o;
             let old_p1 = ray.d;

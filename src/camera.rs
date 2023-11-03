@@ -37,7 +37,7 @@ pub mod camera {
     }
 
     impl Camera {
-        pub fn pre_calc(&mut self) {
+        fn pre_calc(&mut self) {
             // calc coordframe
             let a = self.look_from - self.look_at;
             let b = self.up;
@@ -62,7 +62,7 @@ pub mod camera {
             self.half_width = self.width as f32 / 2.0;
         }
 
-        pub fn from(
+        pub fn new(
             width: u32,
             height: u32,
             look_from: Vector3<f32>,
@@ -70,7 +70,7 @@ pub mod camera {
             up: Vector3<f32>,
             fov_y: f32,
         ) -> Self {
-            Camera {
+            let mut camera = Camera {
                 width,
                 height,
                 fov_y,
@@ -86,7 +86,9 @@ pub mod camera {
                 w: Vector3 { x: 0.0, y: 0.0, z: 0.0 },
                 u: Vector3 { x: 0.0, y: 0.0, z: 0.0 },
                 v: Vector3 { x: 0.0, y: 0.0, z: 0.0 },
-            }
+            };
+            camera.pre_calc();
+            camera
         }
 
         pub fn ray_thru_pixel(&self, x: f32, y: f32) -> Ray {
