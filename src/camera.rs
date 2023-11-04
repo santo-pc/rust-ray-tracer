@@ -4,7 +4,7 @@ pub mod camera {
     use rust_math::trigonometry::*;
     const M_PI: f32 = std::f32::consts::PI;
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone, Copy)]
     pub struct Camera {
         pub width: u32,
         pub height: u32,
@@ -23,7 +23,7 @@ pub mod camera {
         pub v: Vector3<f32>,
     }
 
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Copy)]
     pub struct Ray {
         pub o: Vector3<f32>,
         pub d: Vector3<f32>,

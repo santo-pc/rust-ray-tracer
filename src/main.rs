@@ -9,9 +9,10 @@ pub mod shapes;
 
 use crate::ray_tracer::ray_tracer::Color;
 use crate::{camera::camera::Camera, shapes::shapes::Sphere};
-use cgmath::{Matrix4, One, SquareMatrix, Vector3};
+use cgmath::{Matrix4, One, Rad, SquareMatrix, Vector3, Zero};
 use ray_tracer::ray_tracer::{Image, RayTracer};
 use std::default;
+use std::f32::consts::PI;
 use std::fs::File;
 use std::io::{self, BufRead};
 
@@ -34,16 +35,16 @@ struct RenderSettings {
     width: u32,
     height: u32,
     trace_depth: i32,
-    output_file: &str,
+    output_file: String,
 }
 
 impl RenderSettings {
     pub fn default() -> RenderSettings {
-        RenderSettings { width: 400, height: 300, trace_depth: 5, output_file: "" }
+        RenderSettings { width: 400, height: 300, trace_depth: 5, output_file: "".to_string() }
     }
 
     pub fn from(width: u32, height: u32) -> RenderSettings {
-        RenderSettings { width, height, trace_depth: 5, output_file: "" }
+        RenderSettings { width, height, trace_depth: 5, output_file: "".to_string() }
     }
 }
 
@@ -52,7 +53,7 @@ fn create_sample_sphere() -> Sphere {
 }
 
 fn create_sample_cam() -> Camera {
-    Camera::from(
+    Camera::new(
         800,
         600,
         Vector3 { x: -2.0, y: -2.0, z: 2.0 },
@@ -63,44 +64,17 @@ fn create_sample_cam() -> Camera {
 }
 
 fn main() -> io::Result<()> {
-    let mut uno = 2;
-    uno = 4;
-    let scene =
-        read_scene("/Users/s.palacio-caro/Dev/rust/my-ray-tracer/src/scene1.test".to_string());
-    // println!("Testing Image");
-    // let mut image = Image::new(2, 2);
-    //
-    // image.image[0 as usize][0 as usize] = Color { r: 1, g: 0, b: 0 };
-    // image.image[0 as usize][1 as usize] = Color { r: 2, g: 0, b: 0 };
-    // image.image[1 as usize][0 as usize] = Color { r: 3, g: 0, b: 0 };
-    // image.image[1 as usize][1 as usize] = Color { r: 4, g: 0, b: 0 };
-    //
-    // image.print_matrix();
-    //
-    // image.image.iter().for_each(|col| {
-    //     col.iter().for_each(|cell| print!("{}", cell));
-    //     println!("");
-    // });
-    //
-    // return Ok(());
-
-    // let bytes = vec![2u8; 800 * 600 * 3];
-    // let bytes_mapped: Vec<u8> =
-    //     bytes.iter().enumerate().map(|(i, &_value)| (i % 255) as u8).collect();
-    //
-    // let buffer: &[u8] = &bytes_mapped;
-
-    // Save the buffer as "image.png"
+    let scene = read_scene("src/scene3.test".to_string());
     // image::save_buffer("image.png", buffer, 800, 600, image::ColorType::Rgb8).unwrap();
 
-    println!("Starting to build scene");
-    let scene = Scene {
-        cams: vec![create_sample_cam()],
-        spheres: vec![create_sample_sphere()],
-        triangles: vec![],
-        vertices: vec![],
-    };
-
+    // println!("Starting to build scene");
+    // let scene = Scene {
+    //     cams: vec![create_sample_cam()],
+    //     spheres: vec![create_sample_sphere()],
+    //     triangles: vec![],
+    //     vertices: vec![],
+    // };
+    //
     let tracer = RayTracer {};
 
     // tracer.ray_trace(&scene, 4, 2);
@@ -130,47 +104,35 @@ fn read_scene(file_path: String) -> Scene {
     for line in reader.lines() {
         match line {
             Ok(line) => {
-                let _list: Vec<&str> = line.trim().split(' ').collect();
-                let cmd = _list[0];
-                let _args = &_list[1..];
+                if !line.starts_with("#") && !line.is_empty() {
+                    let _list: Vec<&str> = line.split(' ').filter(|s| !s.is_empty()).collect();
+                    let cmd = _list[0];
+                    let _args: Vec<f32> =
+                        _list[1..].iter().map(|a| a.parse::<f32>().unwrap()).collect();
 
-                //println!("_list {:?}", _list);
-                if !cmd.starts_with("#") && !line.is_empty() {
-                    println!("Commad: {}", cmd);
-                    println!("args: {}", _args.join(" ").to_string());
+                    println!("Line: {}", line);
+
                     match cmd {
                         "size" => {
-                            r_settings.width = _args[0].parse().unwrap();
-                            r_settings.height = _args[1].parse().unwrap();
+                            r_settings.width = _args[0] as u32;
+                            r_settings.height = _args[1] as u32;
                         },
-                        "output" => r_settings.output_file = _args[0],
-                        "maxdepth" => r_settings.trace_depth = _args[0].parse().unwrap(),
+                        "output" => r_settings.output_file = _args[0].to_string(),
+                        "maxdepth" => r_settings.trace_depth = _args[0] as i32,
                         "camera" => scene.cams.push(Camera::new(
                             r_settings.width.clone(),
                             r_settings.height.clone(),
-                            Vector3::new(
-                                _args[0].parse().unwrap(),
-                                _args[1].parse().unwrap(),
-                                _args[2].parse().unwrap(),
-                            ),
-                            Vector3::new(
-                                _args[3].parse().unwrap(),
-                                _args[4].parse().unwrap(),
-                                _args[5].parse().unwrap(),
-                            ),
-                            Vector3::new(
-                                _args[6].parse().unwrap(),
-                                _args[7].parse().unwrap(),
-                                _args[8].parse().unwrap(),
-                            ),
-                            _args[9].parse().unwrap(),
+                            Vector3::new(_args[0], _args[1], _args[2]),
+                            Vector3::new(_args[3], _args[4], _args[5]),
+                            Vector3::new(_args[6], _args[7], _args[8]),
+                            _args[9],
                         )),
                         "sphere" => {
                             scene.spheres.push(Sphere::from(
-                                _args[0].parse().unwrap(),
-                                _args[1].parse().unwrap(),
-                                _args[2].parse().unwrap(),
-                                _args[3].parse().unwrap(),
+                                _args[0],
+                                _args[1],
+                                _args[2],
+                                _args[3],
                                 transfstack.last().unwrap().clone(),
                             ));
                         },
@@ -178,41 +140,43 @@ fn read_scene(file_path: String) -> Scene {
                         // TRANSFORMS
                         "translate" => {
                             let translation = &Matrix4::from_translation(Vector3::new(
-                                _args[0].parse().unwrap(),
-                                _args[1].parse().unwrap(),
-                                _args[2].parse().unwrap(),
+                                _args[0], _args[1], _args[2],
                             ));
 
                             right_multiply(&translation, &mut transfstack);
                             left_multiply(&translation.invert().unwrap(), &mut inverse_transfstack);
                         },
                         "scale" => {
-                            let scale = &Matrix4::from_nonuniform_scale(
-                                _args[0].parse().unwrap(),
-                                _args[1].parse().unwrap(),
-                                _args[2].parse().unwrap(),
-                            );
+                            let scale =
+                                &Matrix4::from_nonuniform_scale(_args[0], _args[1], _args[2]);
 
                             right_multiply(&scale, &mut transfstack);
                             left_multiply(&scale.invert().unwrap(), &mut inverse_transfstack);
                         },
                         "rotate" => {
+                            let axis = Vector3::new(_args[0], _args[1], _args[2]);
+                            // read degrees and pass as rads
+                            let theta = Rad(_args[4] * PI / 180.0);
 
-                            todo
-                            let scale = &Matrix4::from(
-                                _args[0].parse().unwrap(),
-                                _args[1].parse().unwrap(),
-                                _args[2].parse().unwrap(),
-                            );
+                            let scale = &Matrix4::from_axis_angle(axis, theta);
 
                             right_multiply(&scale, &mut transfstack);
                             left_multiply(&scale.invert().unwrap(), &mut inverse_transfstack);
+                        },
+                        "pushTransform" => {
+                            transfstack.push(Matrix4::zero());
+                            ()
+                        },
+
+                        "popTransform" => {
+                            transfstack.pop();
+                            ()
                         },
 
                         _ => println!("Neglecting cmd {}", cmd),
                     };
                 } else {
-                    println!("Was empty line or commend");
+                    println!("Was empty line or comment");
                 }
             },
             Err(err) => {

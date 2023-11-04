@@ -7,13 +7,13 @@ pub mod ray_tracer {
     use crate::Scene;
     use cgmath::{Vector3, Zero};
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone, Copy)]
     pub enum TestHit {
         Hit(HitInfo),
         NoHit,
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone, Copy)]
     pub struct HitInfo {
         t_value: f32,
         p: Vector3<f32>,
@@ -112,6 +112,11 @@ pub mod ray_tracer {
         pub fn ray_trace(&self, scene: &Scene) -> Image {
             let cam = scene.cams.get(0).unwrap();
             let mut image = Image::new(cam.width, cam.height);
+
+            for sphere in &scene.spheres {
+                println!["Sphere transform: {:?}\n\n", sphere.as_g_shape()];
+            }
+
             // println!("Starting ray tracing with scene: {:?}", scene);
 
             for j in 0..cam.height {
@@ -135,9 +140,9 @@ pub mod ray_tracer {
                     // );
                 }
             }
-            println!("result image:");
+            // println!("result image:");
 
-            image.print_matrix();
+            // image.print_matrix();
             return image;
         }
 
@@ -151,7 +156,7 @@ pub mod ray_tracer {
                     TestHit::Hit(test) => {
                         if test.t_value < t_min && test.t_value > 0.0 {
                             t_min = test.t_value;
-                            closest_intersection = test;
+                            closest_intersection = test.clone();
                             closest_intersection.ray = ray.clone();
                         }
                     },
