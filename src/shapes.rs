@@ -14,8 +14,6 @@ pub mod shapes {
     };
     use rust_math::num::sqrt;
 
-    const M_PI: f32 = std::f32::consts::PI;
-
     #[derive(Debug)]
     pub struct GeometricShape {
         //type needed?
@@ -81,11 +79,11 @@ pub mod shapes {
 
     #[derive(Debug)]
     pub struct Sphere {
-        x: f32,
-        y: f32,
-        z: f32,
-        radius: f32,
-        g_shape: GeometricShape,
+        pub x: f32,
+        pub y: f32,
+        pub z: f32,
+        pub radius: f32,
+        pub g_shape: GeometricShape,
     }
 
     impl Sphere {
