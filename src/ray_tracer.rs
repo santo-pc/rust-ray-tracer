@@ -94,10 +94,10 @@ pub mod ray_tracer {
             let cam = scene.cams.get(0).unwrap();
             let mut image = Image::new(cam.width, cam.height);
 
-            for sphere in &scene.spheres {
-                println!["Sphere transform: {:?}", sphere.as_g_shape()];
-            }
-
+            // for sphere in &scene.spheres {
+            //     println!["Sphere transform: {:?}", sphere.as_g_shape()];
+            // }
+            //
             // println!("Starting ray tracing with scene: {:?}", scene);
 
             for j in 0..cam.height {
@@ -117,12 +117,10 @@ pub mod ray_tracer {
 
                     image.image[j as usize][i as usize] = _color;
 
-                    // println![
-                    //     "Progress: {}",
-                    //     (j as f64 + i as f64) / (cam.width as f64 + cam.height as f64) * 100.0
-                    // ];
-                    // // if i == 0 {
-                    // }
+                    println![
+                        "Progress: {}",
+                        (j as f64 + i as f64) / (cam.width as f64 + cam.height as f64) * 100.0
+                    ];
                 }
             }
 

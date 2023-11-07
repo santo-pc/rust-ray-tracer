@@ -116,59 +116,72 @@ pub mod shapes {
         // }
         //
         fn intersection(&self, ray: &Ray) -> TestHit {
-            let old_p0 = ray.o;
-            let old_p1 = ray.d;
+            // let old_p0 = ray.o;
+            // let old_p1 = ray.d;
 
-            let mut inverse = self.g_shape.inverse_transform;
+            return TestHit::NoHit;
+            let ray = ray.clone();
 
+            // let inverse = self.g_shape.inverse_transform;
+
+            println! {"Sphere intersection1"};
             // apply inverse transform to the ray
-            let o = (inverse * Vector4::new(ray.o.x, ray.o.y, ray.o.z, 1.0)).truncate(); // 1 -> point
-            let d = (inverse * Vector4::new(ray.d.x, ray.d.y, ray.d.z, 1.0)).truncate().normalize(); // 0 -> vector
+            let o = (self.g_shape.inverse_transform * Vector4::new(ray.o.x, ray.o.y, ray.o.z, 1.0))
+                .truncate(); // 1 -> point
+
+            let d = (self.g_shape.inverse_transform * Vector4::new(ray.d.x, ray.d.y, ray.d.z, 0.0))
+                .truncate()
+                .normalize(); // 0 -> vector
 
             //A = Xd^2 + Yd^2 + Zd^2 = 1 since |P1|
             let a = pow(d.x, 2) + pow(d.y, 2) + pow(d.z, 2);
 
+            println! {"Sphere intersection2"};
             // B = 2 * (Xd * (X0 - Xc) + Yd * (Y0 - Yc) + Zd * (Z0 - Zc))
             let b = 2.0 * (d.x * (o.x - self.x) + (d.y * (o.y - self.y)) + (d.z * (o.z - self.z)));
 
             // C = (X0 - Xc) ^ 2 + (Y0 - Yc) ^ 2 + (Z0 - Zc) ^ 2 - Sr ^ 2
-            let c = pow((o.x - self.x), 2) + pow((o.y - self.y), 2) + pow((o.z - self.z), 2)
+            let c = pow(o.x - self.x, 2) + pow(o.y - self.y, 2) + pow(o.z - self.z, 2)
                 - pow(self.radius, 2);
 
             let discriminant = (b * b) - (4.0 * a * c);
 
+            println! {"Sphere intersection3"};
             // No intersection
             if discriminant < 0.0 {
+                println! {"Sphere intersection4"};
                 return TestHit::NoHit;
             } else if discriminant >= 0.0 {
                 let sqrt_discriminant = sqrt(discriminant);
 
+                println! {"Sphere intersection5"};
                 // calc t0 and check if it is valid
                 let t0 = (-b - sqrt_discriminant) / (2.0 * a);
-                let mut t1 = (-b + sqrt_discriminant) / (2.0 * a);
+                // let mut t1 = 0.0; // (-b + sqrt_discriminant) / (2.0 * a);
 
-                let mut t_value = 0.0;
+                let t_value: f32;
 
                 // t0 is valid
                 if t0 > 0.0 {
                     t_value = t0;
                 } else {
                     // then it is t1
-                    t1 = (-b + sqrt_discriminant) / (2.0 * a);
-                    t_value = t1;
+                    t_value = (-b + sqrt_discriminant) / (2.0 * a);
 
-                    if t1 <= 0.0 {
+                    if t_value <= 0.0 {
                         return TestHit::NoHit;
                     };
                 }
 
+                println! {"Sphere intersection6"};
                 // compute intersection
                 // take intersection point back to the actual object's transform
-                let temp = (o + d * t_value);
+                let temp = o + d * t_value;
                 let intersection_p = Vector4::new(temp.x, temp.y, temp.z, 1.0);
 
                 let intersection_obj_space = self.g_shape.transform * intersection_p;
 
+                println! {"Sphere intersection7"};
                 // Calc normal
                 let normal =
                     (intersection_p - Vector4::new(self.x, self.y, self.z, 0.0)).normalize();
@@ -176,8 +189,9 @@ pub mod shapes {
                     (self.g_shape.inverse_transpose_transform_3x3 * normal.truncate()).normalize();
 
                 // Calc depth value
-                let t = (intersection_obj_space.truncate() - old_p0).magnitude();
+                let t = (intersection_obj_space.truncate() - ray.o).magnitude();
 
+                println! {"Sphere intersection8"};
                 // Set output
                 return TestHit::Hit(HitInfo::from(
                     t,
@@ -185,9 +199,10 @@ pub mod shapes {
                     normal_transformed,
                     ray.clone(),
                 ));
+            } else {
+                println! {"Sphere intersection9"};
+                return TestHit::NoHit;
             }
-
-            return TestHit::NoHit;
         }
     }
 }

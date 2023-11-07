@@ -1,0 +1,164 @@
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Line: size 640 480 
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Line: camera -2 -2 2 0 0 0 1 1 2 60
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Line: maxverts 8
+Neglecting cmd maxverts
+Was empty line or comment
+Line: vertex -1 -1 -1
+Neglecting cmd vertex
+Line: vertex +1 -1 -1 
+Neglecting cmd vertex
+Line: vertex +1 +1 -1 
+Neglecting cmd vertex
+Line: vertex -1 +1 -1 
+Neglecting cmd vertex
+Line: vertex -1 -1 +1
+Neglecting cmd vertex
+Line: vertex +1 -1 +1 
+Neglecting cmd vertex
+Line: vertex +1 +1 +1
+Neglecting cmd vertex
+Line: vertex -1 +1 +1
+Neglecting cmd vertex
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Was empty line or comment
+Line: ambient .5 0 .5 
+Neglecting cmd ambient
+Was empty line or comment
+Line: tri 0 1 5 
+Neglecting cmd tri
+Line: tri 0 5 4 
+Neglecting cmd tri
+Line: ambient .5 1 .5 
+Neglecting cmd ambient
+Was empty line or comment
+Line: tri 3 7 6
+Neglecting cmd tri
+Line: tri 3 6 2
+Neglecting cmd tri
+Line: ambient 1 .5 .5 
+Neglecting cmd ambient
+Was empty line or comment
+Line: tri 1 2 6
+Neglecting cmd tri
+Line: tri 1 6 5 
+Neglecting cmd tri
+Line: ambient 0 .5 .5 
+Neglecting cmd ambient
+Was empty line or comment
+Line: tri 0 7 3 
+Neglecting cmd tri
+Line: tri 0 4 7 
+Neglecting cmd tri
+Line: ambient .5 .5 0
+Neglecting cmd ambient
+Was empty line or comment
+Line: tri 0 3 2 
+Neglecting cmd tri
+Line: tri 0 2 1
+Neglecting cmd tri
+Line: ambient .5 .5 1
+Neglecting cmd ambient
+Was empty line or comment
+Line: tri 4 5 6 
+Neglecting cmd tri
+Line: tri 4 6 7 
+Neglecting cmd tri
+Was empty line or comment
+Was empty line or comment
+Line: ambient 1 1 1
+Neglecting cmd ambient
+Was empty line or comment
+Line: sphere 1 0 0 0.15
+Was empty line or comment
+Line: sphere -.5 1 -.5 0.15
+Line: sphere +.5 1 +.5 0.15
+Was empty line or comment
+Line: sphere 0 0 1 0.15
+Line: sphere -.5 -.5 1 0.15
+Line: sphere +.5 +.5 1 0.15
+Was empty line or comment
+Line: sphere -1 -.5 -.5 0.15
+Line: sphere -1 -.5 +.5 0.15
+Line: sphere -1 +.5 +.5 0.15
+Line: sphere -1 +.5 -.5 0.15
+Was empty line or comment
+Line: sphere -.5 -1 -.5 0.15
+Line: sphere -.5 -1 +.5 0.15
+Line: sphere +.5 -1 +.5 0.15
+Line: sphere +.5 -1 -.5 0.15
+Line: sphere  0 -1 0 0.15
+Was empty line or comment
+Line: sphere -.5 -.5 -1 0.15
+Line: sphere -.5   0 -1 0.15
+Line: sphere -.5 +.5 -1 0.15
+Line: sphere +.5 -.5 -1 0.15
+Line: sphere +.5   0 -1 0.15
+Line: sphere +.5 +.5 -1 9.15 
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Sphere transform: GeometricShape { size: 0.0, material: Vector3 [0, 0, 0], transform: Matrix4 [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], inverse_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform: Matrix4 [[1.0, -0.0, 0.0, -0.0], [-0.0, 1.0, -0.0, 0.0], [0.0, -0.0, 1.0, -0.0], [-0.0, 0.0, -0.0, 1.0]], inverse_transpose_transform_3x3: Matrix3 [[1.0, -0.0, 0.0], [-0.0, 1.0, -0.0], [0.0, -0.0, 1.0]] }
+Generated ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 }
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 1.0, 0.0, 0.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, 1.0, -0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, 1.0, 0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.0, 0.0, 1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, -0.5, 1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, 0.5, 1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -1.0, -0.5, -0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -1.0, -0.5, 0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -1.0, 0.5, 0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -1.0, 0.5, -0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, -1.0, -0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, -1.0, 0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, -1.0, 0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, -1.0, -0.5
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.0, -1.0, 0.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, -0.5, -1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, 0.0, -1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: -0.5, 0.5, -1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, -0.5, -1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, 0.0, -1.0
+Testing Ray: Ray { o: Vector3 [-2.0, -2.0, 2.0], d: Vector3 [0.57349074, 0.573716, -0.5847722], t: 10000.0 } with Shere: 0.5, 0.5, -1.0
