@@ -2,27 +2,23 @@
 mod test;
 
 pub mod shapes {
-    use crate::camera::camera::Ray;
-    use crate::ray_tracer::ray_tracer::HitInfo;
-    use crate::ray_tracer::ray_tracer::TestHit;
-    use cgmath::num_traits::pow;
-    use cgmath::Matrix4;
-    use cgmath::Vector3;
-    use cgmath::Vector4;
-    use cgmath::{
-        EuclideanSpace, InnerSpace, Matrix, Matrix3, One, Point3, SquareMatrix, Transform, Zero,
+    use crate::{
+        camera::camera::Ray,
+        ray_tracer::ray_tracer::{HitInfo, TestHit},
     };
-    use rust_math::num::sqrt;
+    use cgmath::{num_traits::pow, InnerSpace, Matrix, Matrix4, SquareMatrix};
+    use cgmath::{Matrix3, One, Zero};
+    use cgmath::{Vector3, Vector4};
 
     #[derive(Debug)]
     pub struct GeometricShape {
         //type needed?
-        size: f32,
+        size: f64,
         material: Vector3<i32>,
-        transform: Matrix4<f32>,
-        inverse_transform: Matrix4<f32>,
-        inverse_transpose_transform: Matrix4<f32>,
-        inverse_transpose_transform_3x3: Matrix3<f32>,
+        transform: Matrix4<f64>,
+        inverse_transform: Matrix4<f64>,
+        // inverse_transpose_transform: Matrix4<f64>,
+        inverse_transpose_transform_3x3: Matrix3<f64>,
     }
 
     pub trait AsGShape {
@@ -38,7 +34,7 @@ pub mod shapes {
                 material: Vector3::zero(),
                 transform: Matrix4::one(),
                 inverse_transform: Matrix4::one(),
-                inverse_transpose_transform: Matrix4::one(),
+                // inverse_transpose_transform: Matrix4::one(),
                 inverse_transpose_transform_3x3: Matrix3::one(),
             }
         }
@@ -48,13 +44,9 @@ pub mod shapes {
             return true;
         }
 
-        pub fn from(transform: Matrix4<f32>) -> GeometricShape {
-            // inverseTransform = glm::inverse(transform);
+        pub fn from(transform: Matrix4<f64>) -> GeometricShape {
             let inverse_transform = transform.invert().unwrap();
-            // inverseTransposeTransform = glm::transpose(inverseTransform);
             let inverse_transpose_transform = inverse_transform.transpose();
-            // inverseTransposeTransform3x3 = mat3(inverseTransposeTransform);
-            // self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from(self.g_shape.inverse_transpose_transform.);
             let inverse_transpose_transform_3x3 = Matrix3::new(
                 inverse_transpose_transform.x.x,
                 inverse_transpose_transform.x.y,
@@ -70,7 +62,7 @@ pub mod shapes {
             GeometricShape {
                 transform,
                 inverse_transform,
-                inverse_transpose_transform,
+                // inverse_transpose_transform,
                 inverse_transpose_transform_3x3,
                 ..Default::default()
             }
@@ -79,15 +71,15 @@ pub mod shapes {
 
     #[derive(Debug)]
     pub struct Sphere {
-        pub x: f32,
-        pub y: f32,
-        pub z: f32,
-        pub radius: f32,
+        pub x: f64,
+        pub y: f64,
+        pub z: f64,
+        pub radius: f64,
         pub g_shape: GeometricShape,
     }
 
     impl Sphere {
-        pub fn from(x: f32, y: f32, z: f32, radius: f32, transform: Matrix4<f32>) -> Sphere {
+        pub fn from(x: f64, y: f64, z: f64, radius: f64, transform: Matrix4<f64>) -> Sphere {
             Sphere { x, y, z, radius, g_shape: GeometricShape::from(transform) }
         }
 
@@ -101,30 +93,9 @@ pub mod shapes {
             &self.g_shape
         }
 
-        // fn pre_calc(&mut self) {
-        //     // inverseTransform = glm::inverse(transform);
-        //     self.g_shape.inverse_transform = self.g_shape.transform.invert().unwrap();
-        //     // inverseTransposeTransform = glm::transpose(inverseTransform);
-        //     self.g_shape.inverse_transpose_transform = self.g_shape.inverse_transform.transpose();
-        //     // inverseTransposeTransform3x3 = mat3(inverseTransposeTransform);
-        //     // self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from(self.g_shape.inverse_transpose_transform.);
-        //     self.g_shape.inverse_transpose_transform_3x3 = Matrix3::from_cols(
-        //         self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
-        //         self.g_shape.inverse_transpose_transform.row(1).truncate_n(3),
-        //         self.g_shape.inverse_transpose_transform.row(0).truncate_n(3),
-        //     );
-        // }
-        //
         fn intersection(&self, ray: &Ray) -> TestHit {
-            // let old_p0 = ray.o;
-            // let old_p1 = ray.d;
-
-            return TestHit::NoHit;
             let ray = ray.clone();
 
-            // let inverse = self.g_shape.inverse_transform;
-
-            println! {"Sphere intersection1"};
             // apply inverse transform to the ray
             let o = (self.g_shape.inverse_transform * Vector4::new(ray.o.x, ray.o.y, ray.o.z, 1.0))
                 .truncate(); // 1 -> point
@@ -136,7 +107,6 @@ pub mod shapes {
             //A = Xd^2 + Yd^2 + Zd^2 = 1 since |P1|
             let a = pow(d.x, 2) + pow(d.y, 2) + pow(d.z, 2);
 
-            println! {"Sphere intersection2"};
             // B = 2 * (Xd * (X0 - Xc) + Yd * (Y0 - Yc) + Zd * (Z0 - Zc))
             let b = 2.0 * (d.x * (o.x - self.x) + (d.y * (o.y - self.y)) + (d.z * (o.z - self.z)));
 
@@ -146,63 +116,104 @@ pub mod shapes {
 
             let discriminant = (b * b) - (4.0 * a * c);
 
-            println! {"Sphere intersection3"};
             // No intersection
             if discriminant < 0.0 {
-                println! {"Sphere intersection4"};
-                return TestHit::NoHit;
-            } else if discriminant >= 0.0 {
-                let sqrt_discriminant = sqrt(discriminant);
-
-                println! {"Sphere intersection5"};
-                // calc t0 and check if it is valid
-                let t0 = (-b - sqrt_discriminant) / (2.0 * a);
-                // let mut t1 = 0.0; // (-b + sqrt_discriminant) / (2.0 * a);
-
-                let t_value: f32;
-
-                // t0 is valid
-                if t0 > 0.0 {
-                    t_value = t0;
-                } else {
-                    // then it is t1
-                    t_value = (-b + sqrt_discriminant) / (2.0 * a);
-
-                    if t_value <= 0.0 {
-                        return TestHit::NoHit;
-                    };
-                }
-
-                println! {"Sphere intersection6"};
-                // compute intersection
-                // take intersection point back to the actual object's transform
-                let temp = o + d * t_value;
-                let intersection_p = Vector4::new(temp.x, temp.y, temp.z, 1.0);
-
-                let intersection_obj_space = self.g_shape.transform * intersection_p;
-
-                println! {"Sphere intersection7"};
-                // Calc normal
-                let normal =
-                    (intersection_p - Vector4::new(self.x, self.y, self.z, 0.0)).normalize();
-                let normal_transformed =
-                    (self.g_shape.inverse_transpose_transform_3x3 * normal.truncate()).normalize();
-
-                // Calc depth value
-                let t = (intersection_obj_space.truncate() - ray.o).magnitude();
-
-                println! {"Sphere intersection8"};
-                // Set output
-                return TestHit::Hit(HitInfo::from(
-                    t,
-                    intersection_obj_space.truncate(),
-                    normal_transformed,
-                    ray.clone(),
-                ));
-            } else {
-                println! {"Sphere intersection9"};
                 return TestHit::NoHit;
             }
+
+            let sqrt_discriminant = f64::sqrt(discriminant);
+
+            // calc t0 and check if it is valid
+            let t0 = (-b - sqrt_discriminant) / (2.0 * a);
+
+            let t_value: f64;
+
+            // t0 is valid
+            if t0 > 0.0 {
+                t_value = t0;
+            } else {
+                // then it is t1
+                t_value = (-b + sqrt_discriminant) / (2.0 * a);
+
+                if t_value <= 0.0 {
+                    return TestHit::NoHit;
+                };
+            }
+
+            // compute intersection
+            // take intersection point back to the actual object's transform
+            let temp = o + d * t_value;
+            let intersection_p = Vector4::new(temp.x, temp.y, temp.z, 1.0);
+
+            let intersection_obj_space = self.g_shape.transform * intersection_p;
+
+            // Calc normal
+            let normal = (intersection_p - Vector4::new(self.x, self.y, self.z, 0.0)).normalize();
+            let normal_transformed =
+                (self.g_shape.inverse_transpose_transform_3x3 * normal.truncate()).normalize();
+
+            // Calc depth value
+            let t = (intersection_obj_space.truncate() - ray.o).magnitude();
+
+            // Set output
+            return TestHit::Hit(HitInfo::from(
+                t,
+                intersection_obj_space.truncate(),
+                normal_transformed,
+                ray.clone(),
+            ));
+        }
+    }
+
+    #[derive(Debug)]
+    pub struct Triangle {
+        pub vertices: Vec<usize>,
+        pub a: Vector4<f64>,
+        pub b: Vector4<f64>,
+        pub c: Vector4<f64>,
+        pub g_shape: GeometricShape,
+        a_transformed: Vector4<f64>,
+        b_transformed: Vector4<f64>,
+        c_transformed: Vector4<f64>,
+    }
+
+    impl Triangle {
+        pub fn new(
+            vertices: Vec<usize>,
+            a: Vector4<f64>,
+            b: Vector4<f64>,
+            c: Vector4<f64>,
+        ) -> Triangle {
+            let mut triangle = Triangle {
+                vertices,
+                a,
+                b,
+                c,
+                g_shape: GeometricShape::default(),
+                a_transformed: Vector4::zero(),
+                b_transformed: Vector4::zero(),
+                c_transformed: Vector4::zero(),
+            };
+            triangle.pre_calc();
+            triangle
+        }
+
+        fn pre_calc(&mut self) {
+            self.g_shape.inverse_transform = self.g_shape.transform.invert().unwrap();
+            self.g_shape.inverse_transform = self.g_shape.inverse_transform.transpose();
+            self.a_transformed = self.g_shape.transform * self.a;
+            self.b_transformed = self.g_shape.transform * self.b;
+            self.c_transformed = self.g_shape.transform * self.c;
+        }
+    }
+
+    impl AsGShape for Triangle {
+        fn as_g_shape(&self) -> &GeometricShape {
+            return &self.g_shape;
+        }
+
+        fn intersection(&self, _ray: &Ray) -> TestHit {
+            todo!()
         }
     }
 }

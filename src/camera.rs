@@ -1,5 +1,5 @@
 pub mod camera {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use cgmath::prelude::*;
     use cgmath::Vector3;
@@ -9,30 +9,30 @@ pub mod camera {
     pub struct Camera {
         pub width: u32,
         pub height: u32,
-        pub fov_y: f32,
-        pub fov_x: f32,
-        pub half_fov_y: f32,
-        pub tan_half_fov_x: f32,
-        pub tan_half_fov_y: f32,
-        pub half_height: f32,
-        pub half_width: f32,
-        pub look_from: Vector3<f32>,
-        pub look_at: Vector3<f32>,
-        pub up: Vector3<f32>,
-        pub w: Vector3<f32>,
-        pub u: Vector3<f32>,
-        pub v: Vector3<f32>,
+        pub fov_y: f64,
+        pub fov_x: f64,
+        pub half_fov_y: f64,
+        pub tan_half_fov_x: f64,
+        pub tan_half_fov_y: f64,
+        pub half_height: f64,
+        pub half_width: f64,
+        pub look_from: Vector3<f64>,
+        pub look_at: Vector3<f64>,
+        pub up: Vector3<f64>,
+        pub w: Vector3<f64>,
+        pub u: Vector3<f64>,
+        pub v: Vector3<f64>,
     }
 
     #[derive(Debug, Clone, Copy)]
     pub struct Ray {
-        pub o: Vector3<f32>,
-        pub d: Vector3<f32>,
-        pub t: f32,
+        pub o: Vector3<f64>,
+        pub d: Vector3<f64>,
+        pub t: f64,
     }
 
     impl Ray {
-        pub fn new(o: Vector3<f32>, d: Vector3<f32>, t: f32) -> Ray {
+        pub fn new(o: Vector3<f64>, d: Vector3<f64>, t: f64) -> Ray {
             Ray { o, d, t }
         }
     }
@@ -41,10 +41,10 @@ pub mod camera {
         pub fn new(
             width: u32,
             height: u32,
-            look_from: Vector3<f32>,
-            look_at: Vector3<f32>,
-            up: Vector3<f32>,
-            fov_y: f32,
+            look_from: Vector3<f64>,
+            look_at: Vector3<f64>,
+            up: Vector3<f64>,
+            fov_y: f64,
         ) -> Self {
             let mut camera = Camera {
                 width,
@@ -80,19 +80,23 @@ pub mod camera {
 
             // Calc vertical fov
             let fovy_rads = self.fov_y * PI / 180.0;
-            let aspect_ratio = (self.width / self.height) as f32;
+            let aspect_ratio = (self.width / self.height) as f64;
 
-            self.fov_x = 2.0 * arctan(tan(fovy_rads / 2.0) * aspect_ratio);
+            self.fov_x = 2.0 * (((fovy_rads / 2.0).tan()) * aspect_ratio).atan();
+            // self.fov_x = 2.0 * arctan(tan(fovy_rads / 2.0) * aspect_ratio);
 
             // pre cal tan of half fovs
-            self.tan_half_fov_x = tan(self.fov_x / 2.0);
-            self.tan_half_fov_y = tan(fovy_rads / 2.0);
+            self.tan_half_fov_x = (self.fov_x / 2.0).tan();
+            // self.tan_half_fov_x = tan(self.fov_x / 2.0);
 
-            self.half_height = self.height as f32 / 2.0;
-            self.half_width = self.width as f32 / 2.0;
+            self.tan_half_fov_y = (fovy_rads / 2.0).tan();
+            // self.tan_half_fov_y = tan(fovy_rads / 2.0);
+
+            self.half_height = self.height as f64 / 2.0;
+            self.half_width = self.width as f64 / 2.0;
         }
 
-        pub fn ray_thru_pixel(&self, x: f32, y: f32) -> Ray {
+        pub fn ray_thru_pixel(&self, x: f64, y: f64) -> Ray {
             let alpha = self.tan_half_fov_x * ((x - self.half_width) / self.half_width);
             let beta = self.tan_half_fov_y * ((self.half_height - y) / self.half_height);
 
@@ -102,7 +106,7 @@ pub mod camera {
             let t = 10000.0;
 
             let ray = Ray::new(o, d, t);
-            println!["Generated ray: {:?}", ray];
+            // println!["Generated ray: {:?}", ray];
             return ray;
         }
 
@@ -111,7 +115,7 @@ pub mod camera {
         //     let u_dir = self.u;
         //     let v_dir = self.v;
         //
-        //     let aspect_ratio: f32 = img_width as f32 / img_height as f32;
+        //     let aspect_ratio: f64 = img_width as f64 / img_height as f64;
         //
         //     let top = tan(self.fov_y / 2.0);
         //     let right = aspect_ratio * top;
@@ -119,8 +123,8 @@ pub mod camera {
         //     let left = -right;
         //
         //     // transform x and y into camera space
-        //     let im_plane_u_pos = left + (right - left) * (x as f32 / img_width as f32);
-        //     let im_plane_v_pos = bottom + (top - bottom) * (y as f32 / img_height as f32);
+        //     let im_plane_u_pos = left + (right - left) * (x as f64 / img_width as f64);
+        //     let im_plane_v_pos = bottom + (top - bottom) * (y as f64 / img_height as f64);
         //
         //     return Ray::new(
         //         self.look_from,

@@ -9,3 +9,9 @@ edition = "2021"
 cgmath = "0.18.0"
 rust_math = "0.3.7"
 image = "0.24.7"
+approx = "0.5.1"
+
+[rust]
+debug = true
+debuginfo-level = 2
+
