@@ -112,10 +112,24 @@ pub mod ray_tracer {
             let mut closest_intersection = HitInfo::new();
             closest_intersection.t_value = f64::MAX;
 
+            for it in &scene.triangles {
+                match it.intersection(ray) {
+                    TestHit::Hit(test) => {
+                        println!["Hit Triangle {:?}", ray];
+                        if test.t_value < t_min && test.t_value > 0.0 {
+                            t_min = test.t_value;
+                            closest_intersection = test.clone();
+                            closest_intersection.ray = ray.clone();
+                        }
+                    },
+                    _ => (),
+                }
+            }
+
             for it in &scene.spheres {
                 match it.intersection(ray) {
                     TestHit::Hit(test) => {
-                        println!["There was a hit with ray: {:?}", ray];
+                        println!["Hit sphere {:?}", ray];
                         if test.t_value < t_min && test.t_value > 0.0 {
                             t_min = test.t_value;
                             closest_intersection = test.clone();
