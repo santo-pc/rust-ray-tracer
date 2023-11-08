@@ -4,7 +4,7 @@ mod test;
 pub mod shapes {
     use crate::{
         camera::camera::Ray,
-        ray_tracer::ray_tracer::{HitInfo, TestHit},
+        ray_tracer::ray_tracer::{Color, HitInfo, TestHit},
     };
     use cgmath::{num_traits::pow, InnerSpace, Matrix, Matrix4, SquareMatrix};
     use cgmath::{Matrix3, One, Zero};
@@ -161,6 +161,7 @@ pub mod shapes {
                 intersection_obj_space.truncate(),
                 normal_transformed,
                 ray.clone(),
+                Color { r: 255, g: 0, b: 0 },
             ));
         }
     }
@@ -212,8 +213,55 @@ pub mod shapes {
             return &self.g_shape;
         }
 
-        fn intersection(&self, _ray: &Ray) -> TestHit {
-            todo!()
+        fn intersection(&self, ray: &Ray) -> TestHit {
+            let a = self.a_transformed.truncate();
+            let b = self.b_transformed.truncate();
+            let c = self.c_transformed.truncate();
+            let t_min: f64 = 0.0;
+            let t_max: f64 = f64::MAX;
+
+            let v_ab = b - a;
+            let v_ac = c - a;
+            let norm = v_ab.cross(v_ac).normalize();
+
+            // Triangle plane intersection
+            let output_t_value = norm.dot(a - ray.o) / norm.dot(ray.d);
+            let q = ray.o + output_t_value * ray.d;
+
+            // Compute barycentric coordinates
+            let v_aq = q - a;
+            let dab_ab = v_ab.dot(v_ab);
+            let dab_ac = v_ab.dot(v_ac);
+            let dac_ac = v_ac.dot(v_ac);
+            let daq_ab = v_aq.dot(v_ab);
+            let daq_ac = v_aq.dot(v_ac);
+
+            // determinant
+            let d = dab_ab * dac_ac - dab_ac * dab_ac;
+
+            if d == 0.0 {
+                return TestHit::NoHit;
+            }
+
+            let beta = (dac_ac * daq_ab - dab_ac * daq_ac) / d;
+            let gamma = (dab_ab * daq_ac - dab_ac * daq_ab) / d;
+
+            if (beta < 0.0 || gamma < 0.0)
+                || (beta > 1.0 || gamma > 1.0)
+                || (beta + gamma > 1.0)
+                || (output_t_value < t_min || output_t_value > t_max)
+            {
+                return TestHit::NoHit;
+            }
+
+            // its a hit
+            TestHit::Hit(HitInfo::from(
+                output_t_value,
+                q,
+                norm,
+                ray.clone(),
+                Color { r: 0, g: 255, b: 255 },
+            ))
         }
     }
 }

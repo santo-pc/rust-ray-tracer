@@ -19,11 +19,18 @@ pub mod ray_tracer {
         p: Vector3<f64>,
         n: Vector3<f64>,
         ray: Ray,
+        color: Color,
     }
 
     impl HitInfo {
-        pub fn from(t_value: f64, p: Vector3<f64>, n: Vector3<f64>, ray: Ray) -> HitInfo {
-            HitInfo { t_value, p, n, ray }
+        pub fn from(
+            t_value: f64,
+            p: Vector3<f64>,
+            n: Vector3<f64>,
+            ray: Ray,
+            color: Color,
+        ) -> HitInfo {
+            HitInfo { t_value, p, n, ray, color }
         }
 
         pub fn new() -> HitInfo {
@@ -32,11 +39,12 @@ pub mod ray_tracer {
                 p: Vector3::zero(),
                 n: Vector3::zero(),
                 ray: Ray::new(Vector3::zero(), Vector3::zero(), 0.0),
+                color: Color { r: 0, g: 0, b: 0 },
             }
         }
     }
 
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Copy)]
     pub struct Color {
         pub r: i32,
         pub g: i32,
@@ -92,15 +100,11 @@ pub mod ray_tracer {
 
                     let ray = cam.ray_thru_pixel(x_mid, y_mid);
                     let hit = self.intersect(&ray, scene);
-                    let _color = match hit {
-                        TestHit::Hit(_) => {
-                            // println!["Hit with ray: {:?}", ray];
-                            Color { r: 255, g: 0, b: 0 }
-                        },
+
+                    image.image[j as usize][i as usize] = match hit {
+                        TestHit::Hit(info) => info.color,
                         TestHit::NoHit => Color { r: 0, g: 0, b: 0 },
                     };
-
-                    image.image[j as usize][i as usize] = _color;
                 }
             }
 
