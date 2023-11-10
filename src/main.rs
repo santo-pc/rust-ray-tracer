@@ -1,4 +1,3 @@
-extern crate approx;
 pub mod camera;
 mod ray_tracer;
 pub mod shapes;
@@ -65,21 +64,21 @@ impl RenderSettings {
             output_file: "image_out.png".to_string(),
         }
     }
-
-    pub fn from(width: u32, height: u32) -> RenderSettings {
-        RenderSettings { width, height, trace_depth: 5, output_file: "image_out.png".to_string() }
-    }
 }
 
 fn main() -> io::Result<()> {
-    let scene = read_scene("src/scene0.test".to_string());
+    let file_name = "scene3.test".to_string();
+    let file_path = "src/".to_string() + &file_name;
+    let output_file = "output_".to_string() + &file_name + ".png";
+    let scene = read_scene(file_path.to_string());
 
     let tracer = RayTracer {};
 
     let image = tracer.ray_trace(&scene);
 
     image::save_buffer(
-        scene.settings.output_file,
+        // scene.settings.output_file,
+        output_file,
         &image.convert_to_one_row_array(),
         image.width,
         image.height,
@@ -94,6 +93,8 @@ fn read_scene(file_path: String) -> Scene {
     let reader = io::BufReader::new(file);
     let mut scene = Scene::default();
     scene.settings = RenderSettings::default();
+    let y_axis_invertion = 1.0;
+    let x_axis_invertion = 1.0;
 
     let mut transfstack: Vec<Matrix4<f64>> = vec![Matrix4::one()];
     let mut inverse_transfstack: Vec<Matrix4<f64>> = vec![Matrix4::one()];
@@ -104,72 +105,54 @@ fn read_scene(file_path: String) -> Scene {
                 if !line.starts_with("#") && !line.is_empty() {
                     let _list: Vec<&str> = line.split(' ').filter(|s| !s.is_empty()).collect();
                     let cmd = _list[0];
-                    let _args: Vec<f64> =
+                    let args: Vec<f64> =
                         _list[1..].iter().map(|a| a.parse::<f64>().unwrap()).collect();
 
-                    // println!("Line: {}", line);
-
                     match cmd {
-                        "size" => {
-                            scene.settings.width = _args[0] as u32;
-                            scene.settings.height = _args[1] as u32;
-                        },
-                        "output" => scene.settings.output_file = _args[0].to_string(),
-                        "maxdepth" => scene.settings.trace_depth = _args[0] as i32,
-                        "camera" => scene.cams.push(Camera::new(
-                            scene.settings.width.clone(),
-                            scene.settings.height.clone(),
-                            Vector3::new(_args[0], _args[1], _args[2]),
-                            Vector3::new(_args[3], _args[4], _args[5]),
-                            Vector3::new(_args[6], _args[7], _args[8]),
-                            _args[9],
+                        "size" => handle_size(&mut scene, args[0] as u32, args[1] as u32),
+                        "output" => scene.settings.output_file = args[0].to_string(),
+                        "maxdepth" => scene.settings.trace_depth = args[0] as i32,
+                        "camera" => scene.cams.push(create_camera(
+                            scene.settings.width,
+                            scene.settings.height,
+                            &args,
                         )),
+
                         // GEOMETRY
                         "sphere" => {
-                            scene.spheres.push(Sphere::from(
-                                _args[0],
-                                _args[1],
-                                _args[2],
-                                _args[3],
-                                transfstack.last().unwrap().clone(),
-                            ));
+                            scene
+                                .spheres
+                                .push(create_sphere(&args, transfstack.last().unwrap().clone()));
                         },
                         "maxverts" => {
                             // scene.vertices
                             ()
                         },
                         "vertex" => {
-                            scene.vertices.push(Vector3::new(_args[0], _args[1], _args[2]));
+                            scene.vertices.push(Vector3::new(args[0], args[1], args[2]));
                         },
                         "tri" => {
-                            let vertices =
-                                vec![_args[0] as usize, _args[1] as usize, _args[2] as usize];
-                            let a = scene.vertices[vertices[0] as usize].to_vector4();
-                            let b = scene.vertices[vertices[1] as usize].to_vector4();
-                            let c = scene.vertices[vertices[2] as usize].to_vector4();
-                            scene.triangles.push(Triangle::new(vertices, a, b, c));
+                            scene.triangles.push(create_triangle(args, &scene));
                         },
 
                         // TRANSFORMS
                         "translate" => {
-                            let translation = &Matrix4::from_translation(Vector3::new(
-                                _args[0], _args[1], _args[2],
-                            ));
+                            let translation =
+                                &Matrix4::from_translation(Vector3::new(args[0], args[1], args[2]));
 
                             right_multiply(&translation, &mut transfstack);
                             left_multiply(&translation.invert().unwrap(), &mut inverse_transfstack);
                         },
                         "scale" => {
-                            let scale =
-                                &Matrix4::from_nonuniform_scale(_args[0], _args[1], _args[2]);
+                            let scale = &Matrix4::from_nonuniform_scale(args[0], args[1], args[2]);
 
                             right_multiply(&scale, &mut transfstack);
                             left_multiply(&scale.invert().unwrap(), &mut inverse_transfstack);
                         },
                         "rotate" => {
-                            let axis = Vector3::new(_args[0], _args[1], _args[2]);
+                            let axis = Vector3::new(args[0], args[1], args[2]);
                             // read degrees and pass as rads
-                            let theta = Rad(_args[4] * PI / 180.0);
+                            let theta = Rad(args[4] * PI / 180.0);
 
                             let scale = &Matrix4::from_axis_angle(axis, theta);
 
@@ -199,6 +182,34 @@ fn read_scene(file_path: String) -> Scene {
     }
 
     return scene;
+}
+
+fn create_triangle(args: Vec<f64>, scene: &Scene) -> Triangle {
+    let vert_indexes = vec![args[0] as usize, args[1] as usize, args[2] as usize];
+    let a = scene.vertices[vert_indexes[0] as usize].to_vector4();
+    let b = scene.vertices[vert_indexes[1] as usize].to_vector4();
+    let c = scene.vertices[vert_indexes[2] as usize].to_vector4();
+    Triangle::new(vert_indexes, a, b, c)
+}
+
+fn create_sphere(args: &[f64], transform: Matrix4<f64>) -> Sphere {
+    Sphere::from(args[0], args[1], args[2], args[3], transform)
+}
+
+fn create_camera(width: u32, height: u32, _args: &Vec<f64>) -> Camera {
+    Camera::new(
+        width,
+        height,
+        Vector3::new(_args[0], _args[1], _args[2]),
+        Vector3::new(_args[3], _args[4], _args[5]),
+        Vector3::new(_args[6], _args[7], _args[8]),
+        _args[9],
+    )
+}
+
+fn handle_size(scene: &mut Scene, width: u32, height: u32) {
+    scene.settings.width = width;
+    scene.settings.height = height;
 }
 
 fn right_multiply(m: &Matrix4<f64>, transfstack: &mut Vec<Matrix4<f64>>) {
