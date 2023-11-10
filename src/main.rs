@@ -72,7 +72,7 @@ impl RenderSettings {
 }
 
 fn main() -> io::Result<()> {
-    let scene = read_scene("src/scene3.test".to_string());
+    let scene = read_scene("src/scene0.test".to_string());
 
     let tracer = RayTracer {};
 
@@ -107,7 +107,7 @@ fn read_scene(file_path: String) -> Scene {
                     let _args: Vec<f64> =
                         _list[1..].iter().map(|a| a.parse::<f64>().unwrap()).collect();
 
-                    println!("Line: {}", line);
+                    // println!("Line: {}", line);
 
                     match cmd {
                         "size" => {

@@ -75,6 +75,30 @@ pub mod ray_tracer {
         }
 
         pub fn convert_to_one_row_array(&self) -> Vec<u8> {
+            // let size: usize = (self.width * self.height * 3) as usize;
+            // let mut result: Vec<u8> = vec![0u8; size as usize];
+            // let mut row: usize = 0;
+            // let mut col: usize = 0;
+            // let mut i: usize = 0;
+            // loop {
+            //     result[i] = self.image[row][col].r.clone() as u8;
+            //     result[i + 1] = self.image[row][col].g.clone() as u8;
+            //     result[i + 2] = self.image[row][col].b.clone() as u8;
+            //
+            //     i += 3;
+            //     col += 1;
+            //
+            //     if i as usize >= size {
+            //         break;
+            //     };
+            //
+            //     if col >= self.width as usize {
+            //         col = 0;
+            //         row += 1;
+            //     }
+            // }
+            // return result;
+
             self.image
                 .iter()
                 .flatten()
@@ -92,6 +116,7 @@ pub mod ray_tracer {
         pub fn ray_trace(&self, scene: &Scene) -> Image {
             let cam = scene.cams.get(0).unwrap();
             let mut image = Image::new(cam.width, cam.height);
+            // println!["Scene: {:?}", scene];
 
             for j in 0..cam.height {
                 for i in 0..cam.width {
@@ -119,7 +144,7 @@ pub mod ray_tracer {
             for it in &scene.triangles {
                 match it.intersection(ray) {
                     TestHit::Hit(test) => {
-                        println!["Hit Triangle {:?}", ray];
+                        // println!["Hit Triangle {:?}", ray];
                         if test.t_value < t_min && test.t_value > 0.0 {
                             t_min = test.t_value;
                             closest_intersection = test.clone();
@@ -133,7 +158,7 @@ pub mod ray_tracer {
             for it in &scene.spheres {
                 match it.intersection(ray) {
                     TestHit::Hit(test) => {
-                        println!["Hit sphere {:?}", ray];
+                        // println!["Hit sphere {:?}", ray];
                         if test.t_value < t_min && test.t_value > 0.0 {
                             t_min = test.t_value;
                             closest_intersection = test.clone();
