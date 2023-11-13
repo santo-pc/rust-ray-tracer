@@ -1,6 +1,6 @@
 pub mod ray_tracer {
 
-    use std::fmt::{self, Display};
+    use std::fmt::{self};
 
     use crate::camera::camera::Ray;
     use crate::shapes::shapes::AsGShape;
@@ -16,8 +16,8 @@ pub mod ray_tracer {
     #[derive(Debug, Clone, Copy)]
     pub struct HitInfo {
         t_value: f64,
-        p: Vector3<f64>,
-        n: Vector3<f64>,
+        _p: Vector3<f64>,
+        _n: Vector3<f64>,
         ray: Ray,
         color: Color,
     }
@@ -30,14 +30,14 @@ pub mod ray_tracer {
             ray: Ray,
             color: Color,
         ) -> HitInfo {
-            HitInfo { t_value, p, n, ray, color }
+            HitInfo { t_value, _p: p, _n: n, ray, color }
         }
 
         pub fn new() -> HitInfo {
             HitInfo {
                 t_value: 0.0,
-                p: Vector3::zero(),
-                n: Vector3::zero(),
+                _p: Vector3::zero(),
+                _n: Vector3::zero(),
                 ray: Ray::new(Vector3::zero(), Vector3::zero(), 0.0),
                 color: Color { r: 0, g: 0, b: 0 },
             }
@@ -69,42 +69,17 @@ pub mod ray_tracer {
             Image {
                 width,
                 height,
-                // matrix hxw
+                // matrix h x w
                 image: vec![vec![Color { r: 0, g: 0, b: 0 }; width as usize]; height as usize],
             }
         }
 
         pub fn convert_to_one_row_array(&self) -> Vec<u8> {
-            // let size: usize = (self.width * self.height * 3) as usize;
-            // let mut result: Vec<u8> = vec![0u8; size as usize];
-            // let mut row: usize = 0;
-            // let mut col: usize = 0;
-            // let mut i: usize = 0;
-            // loop {
-            //     result[i] = self.image[row][col].r.clone() as u8;
-            //     result[i + 1] = self.image[row][col].g.clone() as u8;
-            //     result[i + 2] = self.image[row][col].b.clone() as u8;
-            //
-            //     i += 3;
-            //     col += 1;
-            //
-            //     if i as usize >= size {
-            //         break;
-            //     };
-            //
-            //     if col >= self.width as usize {
-            //         col = 0;
-            //         row += 1;
-            //     }
-            // }
-            // return result;
-
             self.image
                 .iter()
-                .flatten()
-                .into_iter()
-                .map(|c| vec![c.r as u8, c.g as u8, c.b as u8])
-                .flatten()
+                .flatten() // from 2d matrix to 1d array
+                .flat_map(|c| [c.r as u8, c.g as u8, c.b as u8]) // color into u8 array into
+                                                                 // flatten
                 .collect::<Vec<u8>>()
         }
     }
@@ -158,7 +133,6 @@ pub mod ray_tracer {
             for it in &scene.spheres {
                 match it.intersection(ray) {
                     TestHit::Hit(test) => {
-                        // println!["Hit sphere {:?}", ray];
                         if test.t_value < t_min && test.t_value > 0.0 {
                             t_min = test.t_value;
                             closest_intersection = test.clone();
