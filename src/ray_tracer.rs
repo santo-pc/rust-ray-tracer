@@ -78,6 +78,7 @@ pub mod ray_tracer {
             self.image
                 .iter()
                 .flatten() // from 2d matrix to 1d array
+                .rev() // because pngs are left top as origin 
                 .flat_map(|c| [c.r as u8, c.g as u8, c.b as u8]) // color into u8 array into
                                                                  // flatten
                 .collect::<Vec<u8>>()
@@ -106,6 +107,7 @@ pub mod ray_tracer {
                         TestHit::NoHit => Color { r: 0, g: 0, b: 0 },
                     };
                 }
+                println!("Progress {:.2}%", j as f64 / cam.height as f64 * 100.0);
             }
 
             return image;

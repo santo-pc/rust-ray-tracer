@@ -67,7 +67,7 @@ impl RenderSettings {
 }
 
 fn main() -> io::Result<()> {
-    let file_name = "scene3.test".to_string();
+    let file_name = "scene1.test".to_string();
     let file_path = "src/".to_string() + &file_name;
     let output_file = "output_".to_string() + &file_name + ".png";
     let scene = read_scene(file_path.to_string());
@@ -93,8 +93,6 @@ fn read_scene(file_path: String) -> Scene {
     let reader = io::BufReader::new(file);
     let mut scene = Scene::default();
     scene.settings = RenderSettings::default();
-    let y_axis_invertion = 1.0;
-    let x_axis_invertion = 1.0;
 
     let mut transfstack: Vec<Matrix4<f64>> = vec![Matrix4::one()];
     let mut inverse_transfstack: Vec<Matrix4<f64>> = vec![Matrix4::one()];
