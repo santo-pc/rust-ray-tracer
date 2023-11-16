@@ -8,6 +8,7 @@ use crate::{
 use cgmath::{Matrix4, One, Rad, SquareMatrix, Vector3, Vector4, Zero};
 use ray_tracer::ray_tracer::RayTracer;
 use std::{
+    env,
     f64::consts::PI,
     fs::File,
     io::{self, BufRead},
@@ -67,7 +68,15 @@ impl RenderSettings {
 }
 
 fn main() -> io::Result<()> {
-    let file_name = "scene1.test".to_string();
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 2 {
+        panic!("Input file is mandatory");
+    }
+
+    let file_name = &args[1];
+
+    // let file_name = "scene1.test".to_string();
+
     let file_path = "src/".to_string() + &file_name;
     let output_file = "output_".to_string() + &file_name + ".png";
     let scene = read_scene(file_path.to_string());
