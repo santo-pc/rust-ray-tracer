@@ -2,11 +2,13 @@ pub mod camera;
 mod ray_tracer;
 pub mod shapes;
 use crate::{
-    camera::camera::Camera,
-    shapes::shapes::{Sphere, Triangle},
+    camera::camera_view::Camera,
+    shapes::shape_components::{Sphere, Triangle},
 };
-use cgmath::{Matrix4, One, Rad, SquareMatrix, Vector3, Vector4, Zero};
-use ray_tracer::ray_tracer::RayTracer;
+use cgmath::{Matrix4, One, Rad, SquareMatrix, Vector3, Vector4};
+use ray_tracer::tracer::RayTracer;
+use std::thread::sleep;
+use std::time::{Duration, Instant};
 use std::{
     env,
     f64::consts::PI,
@@ -36,9 +38,9 @@ pub struct Scene {
     settings: RenderSettings,
 }
 
-impl Scene {
-    pub fn default() -> Scene {
-        Scene {
+impl std::default::Default for Scene {
+    fn default() -> Self {
+        Self {
             cams: vec![],
             spheres: vec![],
             triangles: vec![],
@@ -77,13 +79,30 @@ fn main() -> io::Result<()> {
 
     // let file_name = "scene1.test".to_string();
 
-    let file_path = "src/".to_string() + &file_name;
-    let output_file = "output_".to_string() + &file_name + ".png";
-    let scene = read_scene(file_path.to_string());
+    let file_path = "src/".to_string() + file_name;
+    let output_file = "output_".to_string() + file_name + ".png";
+    let output_file2 = "output2_".to_string() + file_name + ".png";
+    let scene = read_scene(file_path);
 
     let tracer = RayTracer {};
 
+    let now = Instant::now();
     let image = tracer.ray_trace(&scene);
+    println!("Finished render in {}s", now.elapsed().as_secs_f32());
+
+    let now2 = Instant::now();
+    let image2 = tracer.ray_trace_par(&scene);
+    println!("Finished render in {}s", now2.elapsed().as_secs_f32());
+
+    image::save_buffer(
+        // scene.settings.output_file,
+        output_file2,
+        &image2.convert_to_one_row_array(),
+        image2.width,
+        image2.height,
+        image::ColorType::Rgb8,
+    )
+    .unwrap();
 
     image::save_buffer(
         // scene.settings.output_file,
@@ -94,6 +113,7 @@ fn main() -> io::Result<()> {
         image::ColorType::Rgb8,
     )
     .unwrap();
+
     Ok(())
 }
 
@@ -101,7 +121,6 @@ fn read_scene(file_path: String) -> Scene {
     let file = File::open(file_path).unwrap();
     let reader = io::BufReader::new(file);
     let mut scene = Scene::default();
-    scene.settings = RenderSettings::default();
 
     let mut transfstack: Vec<Matrix4<f64>> = vec![Matrix4::one()];
     let mut inverse_transfstack: Vec<Matrix4<f64>> = vec![Matrix4::one()];
@@ -109,7 +128,8 @@ fn read_scene(file_path: String) -> Scene {
     for line in reader.lines() {
         match line {
             Ok(line) => {
-                if !line.starts_with("#") && !line.is_empty() {
+                if !line.starts_with('#') && !line.is_empty() {
+                    println!("Line: {}", line);
                     let _list: Vec<&str> = line.split(' ').filter(|s| !s.is_empty()).collect();
                     let cmd = _list[0];
                     let args: Vec<f64> =
@@ -127,13 +147,10 @@ fn read_scene(file_path: String) -> Scene {
 
                         // GEOMETRY
                         "sphere" => {
-                            scene
-                                .spheres
-                                .push(create_sphere(&args, transfstack.last().unwrap().clone()));
+                            scene.spheres.push(create_sphere(&args, *transfstack.last().unwrap()))
                         },
                         "maxverts" => {
                             // scene.vertices
-                            ()
                         },
                         "vertex" => {
                             scene.vertices.push(Vector3::new(args[0], args[1], args[2]));
@@ -145,41 +162,43 @@ fn read_scene(file_path: String) -> Scene {
                         // TRANSFORMS
                         "translate" => {
                             let translation =
-                                &Matrix4::from_translation(Vector3::new(args[0], args[1], args[2]));
+                                Matrix4::from_translation(Vector3::new(args[0], args[1], args[2]));
+                            // println!("Generated translation matrix: {:?} ", translation);
 
-                            right_multiply(&translation, &mut transfstack);
-                            left_multiply(&translation.invert().unwrap(), &mut inverse_transfstack);
+                            right_multiply(translation, &mut transfstack);
+                            left_multiply(translation.invert().unwrap(), &mut inverse_transfstack);
+                            // println!("Stack state:  {:?}", transfstack.iter().copied().rev());
                         },
                         "scale" => {
-                            let scale = &Matrix4::from_nonuniform_scale(args[0], args[1], args[2]);
+                            let scale = Matrix4::from_nonuniform_scale(args[0], args[1], args[2]);
 
-                            right_multiply(&scale, &mut transfstack);
-                            left_multiply(&scale.invert().unwrap(), &mut inverse_transfstack);
+                            right_multiply(scale, &mut transfstack);
+                            left_multiply(scale.invert().unwrap(), &mut inverse_transfstack);
+                            // println!("Stack state:  {:?}", transfstack.iter());
                         },
                         "rotate" => {
                             let axis = Vector3::new(args[0], args[1], args[2]);
                             // read degrees and pass as rads
-                            let theta = Rad(args[4] * PI / 180.0);
+                            let theta = Rad(args[3] * PI / 180.0);
 
-                            let scale = &Matrix4::from_axis_angle(axis, theta);
+                            let scale = Matrix4::from_axis_angle(axis, theta);
 
-                            right_multiply(&scale, &mut transfstack);
-                            left_multiply(&scale.invert().unwrap(), &mut inverse_transfstack);
+                            right_multiply(scale, &mut transfstack);
+                            left_multiply(scale.invert().unwrap(), &mut inverse_transfstack);
+                            // println!("Stack state:  {:?}", transfstack.iter().copied().rev());
                         },
                         "pushTransform" => {
-                            transfstack.push(Matrix4::zero());
-                            ()
+                            transfstack.push(*transfstack.last().unwrap());
                         },
 
                         "popTransform" => {
                             transfstack.pop();
-                            ()
                         },
 
                         _ => println!("Neglecting cmd {}", cmd),
                     };
                 } else {
-                    println!("Was empty line or comment");
+                    // println!("Was empty line or comment");
                 }
             },
             Err(err) => {
@@ -188,14 +207,14 @@ fn read_scene(file_path: String) -> Scene {
         }
     }
 
-    return scene;
+    scene
 }
 
 fn create_triangle(args: Vec<f64>, scene: &Scene) -> Triangle {
     let vert_indexes = vec![args[0] as usize, args[1] as usize, args[2] as usize];
-    let a = scene.vertices[vert_indexes[0] as usize].to_vector4();
-    let b = scene.vertices[vert_indexes[1] as usize].to_vector4();
-    let c = scene.vertices[vert_indexes[2] as usize].to_vector4();
+    let a = scene.vertices[vert_indexes[0]].to_vector4();
+    let b = scene.vertices[vert_indexes[1]].to_vector4();
+    let c = scene.vertices[vert_indexes[2]].to_vector4();
     Triangle::new(vert_indexes, a, b, c)
 }
 
@@ -203,7 +222,7 @@ fn create_sphere(args: &[f64], transform: Matrix4<f64>) -> Sphere {
     Sphere::from(args[0], args[1], args[2], args[3], transform)
 }
 
-fn create_camera(width: u32, height: u32, _args: &Vec<f64>) -> Camera {
+fn create_camera(width: u32, height: u32, _args: &[f64]) -> Camera {
     Camera::new(
         width,
         height,
@@ -219,12 +238,12 @@ fn handle_size(scene: &mut Scene, width: u32, height: u32) {
     scene.settings.height = height;
 }
 
-fn right_multiply(m: &Matrix4<f64>, transfstack: &mut Vec<Matrix4<f64>>) {
+fn right_multiply(m: Matrix4<f64>, transfstack: &mut Vec<Matrix4<f64>>) {
     let top = transfstack.pop().unwrap();
     transfstack.push(top * m);
 }
 
-fn left_multiply(inverse_m: &Matrix4<f64>, inverse_transfstack: &mut Vec<Matrix4<f64>>) {
+fn left_multiply(inverse_m: Matrix4<f64>, inverse_transfstack: &mut Vec<Matrix4<f64>>) {
     let top = inverse_transfstack.pop().unwrap();
     inverse_transfstack.push(inverse_m * top);
 }

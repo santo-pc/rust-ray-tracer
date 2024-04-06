@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod test;
 
-pub mod shapes {
+pub mod shape_components {
     use crate::{
-        camera::camera::Ray,
-        ray_tracer::ray_tracer::{Color, HitInfo, TestHit},
+        camera::camera_view::Ray,
+        ray_tracer::tracer::{Color, HitInfo, TestHit},
     };
     use cgmath::{num_traits::pow, InnerSpace, Matrix, Matrix4, SquareMatrix};
     use cgmath::{Matrix3, One, Zero};
@@ -13,8 +13,8 @@ pub mod shapes {
     #[derive(Debug)]
     pub struct GeometricShape {
         //type needed?
-        size: f64,
-        material: Vector3<i32>,
+        _size: f64,
+        _material: Vector3<i32>,
         transform: Matrix4<f64>,
         inverse_transform: Matrix4<f64>,
         // inverse_transpose_transform: Matrix4<f64>,
@@ -30,8 +30,8 @@ pub mod shapes {
     impl std::default::Default for GeometricShape {
         fn default() -> Self {
             Self {
-                size: 0.0,
-                material: Vector3::zero(),
+                _size: 0.0,
+                _material: Vector3::zero(),
                 transform: Matrix4::one(),
                 inverse_transform: Matrix4::one(),
                 // inverse_transpose_transform: Matrix4::one(),
@@ -41,10 +41,12 @@ pub mod shapes {
     }
     impl GeometricShape {
         pub fn intersection() -> bool {
-            return true;
+            true
         }
 
         pub fn from(transform: Matrix4<f64>) -> GeometricShape {
+            println!("Transform is {:?} ", transform);
+
             let inverse_transform = transform.invert().unwrap();
             let inverse_transpose_transform = inverse_transform.transpose();
             let inverse_transpose_transform_3x3 = Matrix3::new(
@@ -69,7 +71,7 @@ pub mod shapes {
         }
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Default)]
     pub struct Sphere {
         pub x: f64,
         pub y: f64,
@@ -82,10 +84,6 @@ pub mod shapes {
         pub fn from(x: f64, y: f64, z: f64, radius: f64, transform: Matrix4<f64>) -> Sphere {
             Sphere { x, y, z, radius, g_shape: GeometricShape::from(transform) }
         }
-
-        pub fn default() -> Sphere {
-            Sphere { x: 0.0, y: 0.0, z: 0.0, radius: 0.0, g_shape: GeometricShape::default() }
-        }
     }
 
     impl AsGShape for Sphere {
@@ -94,8 +92,6 @@ pub mod shapes {
         }
 
         fn intersection(&self, ray: &Ray) -> TestHit {
-            let ray = ray.clone();
-
             // apply inverse transform to the ray
             let o = (self.g_shape.inverse_transform * Vector4::new(ray.o.x, ray.o.y, ray.o.z, 1.0))
                 .truncate(); // 1 -> point
@@ -156,13 +152,13 @@ pub mod shapes {
             let t = (intersection_obj_space.truncate() - ray.o).magnitude();
 
             // Set output
-            return TestHit::Hit(HitInfo::from(
+            TestHit::Hit(HitInfo::from(
                 t,
                 intersection_obj_space.truncate(),
                 normal_transformed,
-                ray.clone(),
+                *ray,
                 Color { r: 255, g: 0, b: 0 },
-            ));
+            ))
         }
     }
 
@@ -210,7 +206,7 @@ pub mod shapes {
 
     impl AsGShape for Triangle {
         fn as_g_shape(&self) -> &GeometricShape {
-            return &self.g_shape;
+            &self.g_shape
         }
 
         fn intersection(&self, ray: &Ray) -> TestHit {
@@ -259,7 +255,7 @@ pub mod shapes {
                 output_t_value,
                 q,
                 norm,
-                ray.clone(),
+                *ray,
                 Color { r: 0, g: 255, b: 255 },
             ))
         }

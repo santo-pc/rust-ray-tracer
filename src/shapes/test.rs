@@ -1,14 +1,15 @@
 #[cfg(test)]
-mod test {
+mod shapes_test {
 
     use std::f64::consts::PI;
 
     use cgmath::{Matrix4, One, Vector3};
 
-    use crate::camera::camera::Ray;
-    use crate::ray_tracer::ray_tracer::TestHit;
-    use crate::shapes::shapes::AsGShape;
+    use crate::camera::camera_view::Ray;
+    use crate::ray_tracer::tracer::TestHit;
+    use crate::shapes::shape_components::AsGShape;
     use crate::Sphere;
+    use approx::assert_relative_eq;
 
     #[test]
     fn should_intersect_sphere() {

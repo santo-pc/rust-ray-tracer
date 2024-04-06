@@ -1,9 +1,7 @@
-pub mod camera {
+pub mod camera_view {
     use std::f64::consts::PI;
 
-    use cgmath::prelude::*;
-    use cgmath::Vector3;
-    use rust_math::trigonometry::*;
+    use cgmath::{InnerSpace, Vector3};
 
     #[derive(Debug, Clone, Copy)]
     pub struct Camera {
@@ -105,9 +103,8 @@ pub mod camera {
 
             let t = 10000.0;
 
-            let ray = Ray::new(o, d, t);
+            Ray::new(o, d, t)
             // println!["Generated ray: {:?}", ray];
-            return ray;
         }
 
         // pub fn eye_ray(self, x: i32, y: i32, img_width: i32, img_height: i32) -> Ray {
