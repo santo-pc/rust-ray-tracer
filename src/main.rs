@@ -1,14 +1,16 @@
 pub mod camera;
 mod ray_tracer;
 pub mod shapes;
+
 use crate::{
     camera::camera_view::Camera,
     shapes::shape_components::{Sphere, Triangle},
 };
 use cgmath::{Matrix4, One, Rad, SquareMatrix, Vector3, Vector4};
+use log::{debug, error, info, warn};
 use ray_tracer::tracer::RayTracer;
-use std::thread::sleep;
-use std::time::{Duration, Instant};
+
+use std::time::Instant;
 use std::{
     env,
     f64::consts::PI,
@@ -70,6 +72,10 @@ impl RenderSettings {
 }
 
 fn main() -> io::Result<()> {
+    log4rs::init_file("src/log4rs.yml", Default::default()).unwrap();
+    debug!("Test log");
+    error!("Test log");
+
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         panic!("Input file is mandatory");
@@ -77,36 +83,16 @@ fn main() -> io::Result<()> {
 
     let file_name = &args[1];
 
-    // let file_name = "scene1.test".to_string();
-
     let file_path = "src/".to_string() + file_name;
     let output_file = "output_".to_string() + file_name + ".png";
-    let output_file2 = "output2_".to_string() + file_name + ".png";
     let scene = read_scene(file_path);
 
-    let tracer = RayTracer {};
-
     let now = Instant::now();
-    let image = tracer.ray_trace(&scene);
-    println!("Finished render in {}s", now.elapsed().as_secs_f32());
-
-    let now2 = Instant::now();
-    let image2 = tracer.ray_trace_par(&scene);
-    println!("Finished render in {}s", now2.elapsed().as_secs_f32());
+    let image = RayTracer {}.ray_trace_par(&scene);
+    info!("Finished render in {} milliseconds", now.elapsed().as_millis());
 
     image::save_buffer(
-        // scene.settings.output_file,
-        output_file2,
-        &image2.convert_to_one_row_array(),
-        image2.width,
-        image2.height,
-        image::ColorType::Rgb8,
-    )
-    .unwrap();
-
-    image::save_buffer(
-        // scene.settings.output_file,
-        output_file,
+        output_file.clone(),
         &image.convert_to_one_row_array(),
         image.width,
         image.height,
@@ -114,6 +100,7 @@ fn main() -> io::Result<()> {
     )
     .unwrap();
 
+    info!("Saved image to file {}s", output_file);
     Ok(())
 }
 
@@ -129,7 +116,7 @@ fn read_scene(file_path: String) -> Scene {
         match line {
             Ok(line) => {
                 if !line.starts_with('#') && !line.is_empty() {
-                    println!("Line: {}", line);
+                    info!("Line: {}", line);
                     let _list: Vec<&str> = line.split(' ').filter(|s| !s.is_empty()).collect();
                     let cmd = _list[0];
                     let args: Vec<f64> =
@@ -163,18 +150,18 @@ fn read_scene(file_path: String) -> Scene {
                         "translate" => {
                             let translation =
                                 Matrix4::from_translation(Vector3::new(args[0], args[1], args[2]));
-                            // println!("Generated translation matrix: {:?} ", translation);
+                            // info!("Generated translation matrix: {:?} ", translation);
 
                             right_multiply(translation, &mut transfstack);
                             left_multiply(translation.invert().unwrap(), &mut inverse_transfstack);
-                            // println!("Stack state:  {:?}", transfstack.iter().copied().rev());
+                            // info!("Stack state:  {:?}", transfstack.iter().copied().rev());
                         },
                         "scale" => {
                             let scale = Matrix4::from_nonuniform_scale(args[0], args[1], args[2]);
 
                             right_multiply(scale, &mut transfstack);
                             left_multiply(scale.invert().unwrap(), &mut inverse_transfstack);
-                            // println!("Stack state:  {:?}", transfstack.iter());
+                            // info!("Stack state:  {:?}", transfstack.iter());
                         },
                         "rotate" => {
                             let axis = Vector3::new(args[0], args[1], args[2]);
@@ -185,7 +172,7 @@ fn read_scene(file_path: String) -> Scene {
 
                             right_multiply(scale, &mut transfstack);
                             left_multiply(scale.invert().unwrap(), &mut inverse_transfstack);
-                            // println!("Stack state:  {:?}", transfstack.iter().copied().rev());
+                            // info!("Stack state:  {:?}", transfstack.iter().copied().rev());
                         },
                         "pushTransform" => {
                             transfstack.push(*transfstack.last().unwrap());
@@ -195,14 +182,14 @@ fn read_scene(file_path: String) -> Scene {
                             transfstack.pop();
                         },
 
-                        _ => println!("Neglecting cmd {}", cmd),
+                        _ => warn!("Neglecting cmd {}", cmd),
                     };
                 } else {
-                    // println!("Was empty line or comment");
+                    warn!("Was empty line or comment");
                 }
             },
             Err(err) => {
-                eprintln!("Error reading line: {}", err);
+                error!("Error reading line: {}", err);
             },
         }
     }
