@@ -73,9 +73,6 @@ impl RenderSettings {
 
 fn main() -> io::Result<()> {
     log4rs::init_file("src/log4rs.yml", Default::default()).unwrap();
-    debug!("Test log");
-    error!("Test log");
-
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         panic!("Input file is mandatory");

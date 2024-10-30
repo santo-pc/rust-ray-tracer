@@ -70,64 +70,39 @@ pub mod camera_view {
             let a = self.look_from - self.look_at;
             let b = self.up;
 
+            // construct cameras coord frame
             self.w = a.normalize();
             self.u = b.cross(self.w).normalize();
             self.v = self.w.cross(self.u);
 
+            // pre calcs
+
             self.half_fov_y = self.fov_y / 2.0;
 
-            // Calc vertical fov
+            // vertical fov
             let fovy_rads = self.fov_y * PI / 180.0;
             let aspect_ratio = (self.width / self.height) as f64;
 
             self.fov_x = 2.0 * (((fovy_rads / 2.0).tan()) * aspect_ratio).atan();
-            // self.fov_x = 2.0 * arctan(tan(fovy_rads / 2.0) * aspect_ratio);
 
             // pre cal tan of half fovs
             self.tan_half_fov_x = (self.fov_x / 2.0).tan();
-            // self.tan_half_fov_x = tan(self.fov_x / 2.0);
 
             self.tan_half_fov_y = (fovy_rads / 2.0).tan();
-            // self.tan_half_fov_y = tan(fovy_rads / 2.0);
 
             self.half_height = self.height as f64 / 2.0;
             self.half_width = self.width as f64 / 2.0;
         }
 
-        pub fn ray_thru_pixel(&self, x: f64, y: f64) -> Ray {
-            let alpha = self.tan_half_fov_x * ((x - self.half_width) / self.half_width);
-            let beta = self.tan_half_fov_y * ((self.half_height - y) / self.half_height);
+        pub fn ray_thru_pixel(&self, x_mid: f64, y_mid: f64) -> Ray {
+            let alpha = self.tan_half_fov_x * ((x_mid - self.half_width) / self.half_width);
+            let beta = self.tan_half_fov_y * ((self.half_height - y_mid) / self.half_height);
 
             let o = self.look_from;
             let d = ((alpha * self.u) + (-beta * self.v) - self.w).normalize();
-
             let t = 10000.0;
 
             Ray::new(o, d, t)
-            // println!["Generated ray: {:?}", ray];
         }
-
-        // pub fn eye_ray(self, x: i32, y: i32, img_width: i32, img_height: i32) -> Ray {
-        //     let w_dir = self.w;
-        //     let u_dir = self.u;
-        //     let v_dir = self.v;
-        //
-        //     let aspect_ratio: f64 = img_width as f64 / img_height as f64;
-        //
-        //     let top = tan(self.fov_y / 2.0);
-        //     let right = aspect_ratio * top;
-        //     let bottom = -top;
-        //     let left = -right;
-        //
-        //     // transform x and y into camera space
-        //     let im_plane_u_pos = left + (right - left) * (x as f64 / img_width as f64);
-        //     let im_plane_v_pos = bottom + (top - bottom) * (y as f64 / img_height as f64);
-        //
-        //     return Ray::new(
-        //         self.look_from,
-        //         ((im_plane_u_pos * u_dir) + im_plane_v_pos * v_dir - w_dir).normalize(),
-        //         99999.0,
-        //     );
-        // }
     }
 }

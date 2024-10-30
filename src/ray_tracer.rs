@@ -84,9 +84,8 @@ pub mod tracer {
             self.matrix
                 .iter()
                 .flatten() // from 2d matrix to 1d array
-                .rev() // because pngs have left top origin 
+                // .rev() // because pngs have left top origin 
                 .flat_map(|c| [c.r as u8, c.g as u8, c.b as u8]) // color into u8 array into
-                                                                 // flatten
                 .collect::<Vec<u8>>()
         }
     }
@@ -99,18 +98,17 @@ pub mod tracer {
             let cam = scene.cams.first().unwrap();
             let image = Image::new(cam.width, cam.height);
 
-            let matrix = image
-                .matrix
-                .clone()
+            let matrix: Vec<Vec<Color>> = (0..cam.height)
                 .into_par_iter()
                 .enumerate()
-                .map(|(j, row)| {
+                .map(|(i, row)| {
                     {
-                        row.into_par_iter()
+                        (0..cam.width)
+                            .into_par_iter()
                             .enumerate()
-                            .map(|(i, _)| {
-                                let x_mid = i as f64 + 0.5;
-                                let y_mid = j as f64 + 0.5;
+                            .map(|(j, _)| {
+                                let y_mid = i as f64 + 0.5;
+                                let x_mid = j as f64 + 0.5;
 
                                 let ray = cam.ray_thru_pixel(x_mid, y_mid);
                                 let hit = self.intersect(&ray, scene);
@@ -122,7 +120,7 @@ pub mod tracer {
                             .collect::<Vec<Color>>()
                     }
                 })
-                .collect::<Vec<Vec<Color>>>();
+                .collect();
 
             Image { width: cam.width, height: cam.height, matrix }
         }
